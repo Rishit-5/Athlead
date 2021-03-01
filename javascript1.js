@@ -58,6 +58,8 @@ firebase.initializeApp(firebaseConfig);
 // }
 var nameV,emailV,passWV,genV;
 var files = [];
+var yourPosts = [];
+var imageVs = [];
 var imgName, imgUrl;
 var reader;
 
@@ -164,6 +166,32 @@ document.getElementById("myprofileBtn").onclick = function () {
     document.getElementById("myprofilePage").hidden = false;
     document.getElementById("myprofile").hidden = false;
     document.getElementById("postingPage").hidden = true;
+    for (let i = 0; i < yourPosts.length; i++) {
+        document.getElementById('body').removeChild(yourPosts[i])
+    }
+    firebase.database().ref("Users/"+nameV+"/Posts").once('value', function (snapshot) {
+        snapshot.forEach(function (child) {
+            var str = "Users/"+nameV+"/Posts/"+child.key + "/Link";
+            // child.getRef().on('value', function (snapshot) {
+            //     //images.add( snapshot.getChild("Link").val();
+            // });
+            firebase.database().ref(str).on('value', function (snapshot) {
+                var img = document.createElement('img');
+                img.src = snapshot.val();
+                document.getElementById('body').appendChild(img);
+                yourPosts.push(img);
+            })
+        });
+    });
+    // for (let i = 0; i < images.length; i++) {
+    //     imageVs.push(document.createElement('img'));
+    //     imgName = "mai"
+    //     firebase.database().ref('Users/'+nameV+"/Posts/"+imgName).on('value', function(snapshot){
+    //         imageVs[i].src = snapshot.val().Link;
+    //     });
+    //     document.getElementById('body').appendChild(imageVs[i]);
+    // }
+
 }
 
 document.getElementById("postBtn").onclick = function () {
@@ -219,16 +247,15 @@ document.getElementById("simage").onclick = function(){
     input.click();
 
 }
-document.getElementById("retrieve").onclick = function(){
-    imgName = document.getElementById('namebox1').value;
-    firebase.database().ref('Pictures/'+imgName).on('value', function(snapshot){
-        document.getElementById('myimg').src = snapshot.val().Link;
-    });
-
-
-}
-
-document.getElementById('up').onclick = function(){
+// document.getElementById("retrieve").onclick = function(){
+//     imgName = document.getElementById('namebox1').value;
+//     firebase.database().ref('Pictures/'+imgName).on('value', function(snapshot){
+//         document.getElementById('myimg').src = snapshot.val().Link;
+//     });
+//
+//
+// }
+document.getElementById("post").onclick = function(){
     imgName = document.getElementById("namebox1").value;
     var uploadTask = firebase.storage().ref('Image/'+imgName+".png").put(files[0]);
 
@@ -243,12 +270,40 @@ document.getElementById('up').onclick = function(){
             uploadTask.snapshot.ref.getDownloadURL().then(function(url){
                     imgUrl = url;
 
-                    firebase.database().ref('Pictures/'+imgName).set({
-                        Name: imgName,
-                        Link: imgUrl
+                    firebase.database().ref('Users/'+nameV+"/Posts/" + imgName).set({
+                        Link: imgUrl,
+                        Type: document.getElementById("postType").value
+
                     });
                     alert('image added successfully');
                 }
             );
         });
+
 }
+
+
+// document.getElementById('up').onclick = function(){
+//     imgName = document.getElementById("namebox1").value;
+//     var uploadTask = firebase.storage().ref('Image/'+imgName+".png").put(files[0]);
+//
+//     uploadTask.on('state_changed', function (snapshot){
+//             var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//             document.getElementById('upProgress').innerHTML = 'Upload' + progress+'%';
+//         },
+//         function(error){
+//             alert('error')
+//         },
+//         function(){
+//             uploadTask.snapshot.ref.getDownloadURL().then(function(url){
+//                     imgUrl = url;
+//
+//                     firebase.database().ref('Pictures/'+imgName).set({
+//                         Name: imgName,
+//                         Link: imgUrl
+//                     });
+//                     alert('image added successfully');
+//                 }
+//             );
+//         });
+// }
