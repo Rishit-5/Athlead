@@ -7,13 +7,23 @@
 
 <body id="body">
 
-<div id = "signinScreen" >
-    <button id="siginGoogle">SIGN IN WITH GOOGLE</button><br><br>
-    Username <input id="namebox" type="text" value="KhushMakadia4"/></input> <br><br>
-    Email<input id="emailbox" type="text" value="kmakadia4@gmail.com"/></input> <br><br>
-    Password <input id="passbox" type="text" value="Athlead1"/></input> <br><br>
-    <button id="enterBtn" >ENTER</button>
+<div id = "signinScreen" class = "box" >
 
+    <span class="text-center">login</span>
+    <div class="input-container">
+        <input id="namebox" type="text" required="" value="KhushMakadia4"/>
+        <label>Username</label>
+    </div>
+    <div class="input-container">
+        <input id="emailbox" type="text" required="" value="kmakadia4@gmail.com"/>
+        <label>Email</label>
+    </div>
+    <div class="input-container">
+    <input id="passbox" type="text" required="" value="Athlead1"/>
+    <label>Password</label>
+    </div>
+    <button id="enterBtn" type="button" class="btn">submit</button><br><br>
+    <button id="siginGoogle">SIGN IN WITH GOOGLE</button>
 </div>
 
 <div id = "app" hidden = hidden>

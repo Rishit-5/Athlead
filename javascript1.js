@@ -177,7 +177,12 @@ document.getElementById("myprofileBtn").onclick = function () {
             // });
             firebase.database().ref(str).on('value', function (snapshot) {
                 var img = document.createElement('img');
+
                 img.src = snapshot.val();
+                img.onclick = function () {
+                    hideMainDivs();
+
+                }
                 document.getElementById('myprofilePage').appendChild(img);
                 yourPosts.push(img);
             })
@@ -194,10 +199,14 @@ document.getElementById("myprofileBtn").onclick = function () {
 
 }
 
+document.getElementById("post").onclick = function() {
+    alert("testtststst")
+}
 document.getElementById("postBtn").onclick = function () {
     document.getElementById("myprofile").hidden = true;
     document.getElementById("postingPage").hidden = false;
 }
+
 
 // document.getElementById("quoteBtn").onclick = function () {
 //     hidePostOps();
