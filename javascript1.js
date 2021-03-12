@@ -105,7 +105,7 @@ document.getElementById("enterBtn").onclick = function () {
                 });
 
                 if (passWV ===passpass) {
-                    alert("Welcome!.,");
+                    alert("Welcome!");
                     firebase.database().ref("Users/"+nameV+"/Email").on('value', function(snapshot) {
                         emailV = snapshot.val();
                     });
