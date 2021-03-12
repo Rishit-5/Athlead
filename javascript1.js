@@ -167,7 +167,7 @@ document.getElementById("myprofileBtn").onclick = function () {
     document.getElementById("myprofile").hidden = false;
     document.getElementById("postingPage").hidden = true;
     for (let i = 0; i < yourPosts.length; i++) {
-        document.getElementById('body').removeChild(yourPosts[i])
+        document.getElementById('myprofilePage').removeChild(yourPosts[i])
     }
     firebase.database().ref("Users/"+nameV+"/Posts").once('value', function (snapshot) {
         snapshot.forEach(function (child) {
@@ -177,8 +177,13 @@ document.getElementById("myprofileBtn").onclick = function () {
             // });
             firebase.database().ref(str).on('value', function (snapshot) {
                 var img = document.createElement('img');
+
                 img.src = snapshot.val();
-                document.getElementById('body').appendChild(img);
+                img.onclick = function () {
+                    hideMainDivs();
+
+                }
+                document.getElementById('myprofilePage').appendChild(img);
                 yourPosts.push(img);
             })
         });
@@ -194,10 +199,14 @@ document.getElementById("myprofileBtn").onclick = function () {
 
 }
 
+document.getElementById("post").onclick = function() {
+    alert("testtststst")
+}
 document.getElementById("postBtn").onclick = function () {
     document.getElementById("myprofile").hidden = true;
     document.getElementById("postingPage").hidden = false;
 }
+
 
 // document.getElementById("quoteBtn").onclick = function () {
 //     hidePostOps();
