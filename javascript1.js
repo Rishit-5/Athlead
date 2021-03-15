@@ -255,7 +255,6 @@ document.getElementById("simage").onclick = function(){
     }
     input.click();
 
-
 }
 // document.getElementById("retrieve").onclick = function(){
 //     imgName = document.getElementById('namebox1').value;
