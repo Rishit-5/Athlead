@@ -11,51 +11,6 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-// var nameV,rollV,secV,genV;
-// function Ready(){
-//     nameV = document.getElementById('namebox').value;
-//     rollV = document.getElementById('rollbox').value;
-//     secV = document.getElementById('secbox').value;
-//     genV = document.getElementById('genbox').value;
-//
-// }
-//
-// document.getElementById('insert').onclick = function(){
-//     Ready();
-//     firebase.database().ref('student/'+nameV).set({
-//         nameOfStudent: nameV,
-//         RollNo: rollV,
-//         Section: secV,
-//         Gender: genV,
-//     });
-// }
-//
-// document.getElementById("select").onclick = function(){
-//     Ready();
-//     firebase.database().ref('student/' + rollV).on('value',function(snapshot){
-//         document.getElementById("namebox").value = snapshot.val().nameOfStudent;
-//         document.getElementById('secbox').value = snapshot.val().Section;
-//         document.getElementById('genbox').value = snapshot.val().Gender;
-//
-//
-//
-//
-//     });
-// }
-//
-// document.getElementById('update').onclick = function(){
-//     Ready();
-//     firebase.database().ref('student/'+rollV).update({
-//         nameOfStudent: nameV,
-//         Section: secV,
-//         Gender: genV
-//     });
-// }
-//
-// document.getElementById('delete').onclick = function(){
-//     Ready();
-//     firebase.database().ref('student/'+rollV).remove();
-// }
 var nameV,emailV,passWV,genV;
 var files = [];
 var yourPosts = [];
@@ -69,33 +24,7 @@ document.getElementById("enterBtn").onclick = function () {
     passWV = document.getElementById("passbox").value;
 
     if (!(nameV == "") && !(emailV == "") && !(passWV == "")) {
-        // if (firebase.database().ref("Users/" + nameV).exists()) {
-        //     if (passWV == firebase.database().ref("Users/"+nameV).getChild("Password").getValue()) {
-        //         alert("Welcome Back!");
-        //         emailV = firebase.database().ref("Users/" + nameV).getChild("Email").getValue();
-        //
-        //
-        //         document.getElementById("signinScreen").hidden = true;
-        //         document.getElementById("app").hidden = false;
-        //         hideMainDivs();
-        //         document.getElementById("homePage").hidden = true;
-        //     } else {
-        //         alert("Incorrect password");
-        //     }
-        // } else {
-        //     firebase.database().ref("Users/"+nameV).set({
-        //         Name:nameV,
-        //         Email: emailV,
-        //         Password: passWV,
-        //         Followers: 0,
-        //
-        //     });
-        //     document.getElementById("signinScreen").hidden = true;
-        //     document.getElementById("app").hidden = false;
-        //     hideMainDivs();
-        //     document.getElementById("homePage").hidden = true;
-        // }
-        //
+
 
         firebase.database().ref("Users/"+nameV).on('value', function (snapshot) {
             if (snapshot.exists()) {
@@ -137,18 +66,6 @@ document.getElementById("enterBtn").onclick = function () {
     }
 }
 
-// function put() {
-//     nameV = document.getElementById("namebox").value;
-//     emailV = document.getElementById("emailbox").value;
-//     passWV = document.getElementById("passbox").value;
-//     firebase.database().ref("Users/"+nameV).set({
-//         Name:nameV,
-//         Email: emailV,
-//         Password: passWV,
-//         Followers: 0,
-//
-//     });
-// }
 
 
 document.getElementById("homeBtn").onclick = function () {
@@ -188,17 +105,45 @@ document.getElementById("myprofileBtn").onclick = function () {
             })
         });
     });
-    // for (let i = 0; i < images.length; i++) {
-    //     imageVs.push(document.createElement('img'));
-    //     imgName = "mai"
-    //     firebase.database().ref('Users/'+nameV+"/Posts/"+imgName).on('value', function(snapshot){
-    //         imageVs[i].src = snapshot.val().Link;
-    //     });
-    //     document.getElementById('body').appendChild(imageVs[i]);
-    // }
+
 
 }
+document.getElementById("pfp").onclick = function() {
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = e => {
+        files = e.target.files;
+        reader = new FileReader();
+        reader.onload = function(){
+            document.getElementById("pfp").src = reader.result;
+        }
+        reader.readAsDataURL(files[0]);
+    }
+    input.click();
 
+    imgName = "profile";
+    var uploadTask = firebase.storage().ref('Image/'+imgName+".png").put(files[0]);
+
+    uploadTask.on('state_changed', function (snapshot){
+            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            document.getElementById('upProgress').innerHTML = 'Upload' + progress+'%';
+        },
+        function(error){
+            alert('error')
+        },
+        function(){
+            uploadTask.snapshot.ref.getDownloadURL().then(function(url){
+                    imgUrl = url;
+
+                    firebase.database().ref('Users/'+nameV+"/PFP").set({
+                        Link: imgUrl,
+
+                    });
+                }
+            );
+        });
+
+}
 document.getElementById("post").onclick = function() {
     alert("testtststst")
 }
@@ -208,25 +153,6 @@ document.getElementById("postBtn").onclick = function () {
 }
 
 
-// document.getElementById("quoteBtn").onclick = function () {
-//     hidePostOps();
-//     document.getElementById("quote").hidden = false;
-// }
-//
-// document.getElementById("recipeBtn").onclick = function () {
-//     hidePostOps();
-//     document.getElementById("recipe").hidden = false;
-// }
-//
-// document.getElementById("workoutBtn").onclick = function () {
-//     hidePostOps();
-//     document.getElementById("workout").hidden = false;
-// }
-//
-// document.getElementById("postBackBtn").onclick = function () {
-//     document.getElementById("myprofile").hidden = false;
-//     document.getElementById("postingPage").hidden = true;
-// }
 
 function hidePostOps() {
     document.getElementById("quote").hidden = true;
@@ -256,14 +182,7 @@ document.getElementById("simage").onclick = function(){
     input.click();
 
 }
-// document.getElementById("retrieve").onclick = function(){
-//     imgName = document.getElementById('namebox1').value;
-//     firebase.database().ref('Pictures/'+imgName).on('value', function(snapshot){
-//         document.getElementById('myimg').src = snapshot.val().Link;
-//     });
-//
-//
-// }
+
 document.getElementById("post").onclick = function(){
     imgName = document.getElementById("namebox1").value;
     var uploadTask = firebase.storage().ref('Image/'+imgName+".png").put(files[0]);
@@ -292,27 +211,3 @@ document.getElementById("post").onclick = function(){
 }
 
 
-// document.getElementById('up').onclick = function(){
-//     imgName = document.getElementById("namebox1").value;
-//     var uploadTask = firebase.storage().ref('Image/'+imgName+".png").put(files[0]);
-//
-//     uploadTask.on('state_changed', function (snapshot){
-//             var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-//             document.getElementById('upProgress').innerHTML = 'Upload' + progress+'%';
-//         },
-//         function(error){
-//             alert('error')
-//         },
-//         function(){
-//             uploadTask.snapshot.ref.getDownloadURL().then(function(url){
-//                     imgUrl = url;
-//
-//                     firebase.database().ref('Pictures/'+imgName).set({
-//                         Name: imgName,
-//                         Link: imgUrl
-//                     });
-//                     alert('image added successfully');
-//                 }
-//             );
-//         });
-// }
