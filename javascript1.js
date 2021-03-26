@@ -20,6 +20,7 @@ var reader;
 var loggedIN = false;
 var allPosts = [];
 var totalPosts = [];
+var postNames = [];
 
 document.getElementById("enterBtn").onclick = function () {
     nameV = document.getElementById("namebox").value;
@@ -95,6 +96,8 @@ document.getElementById("searchBtn").onclick = function () {
         document.getElementById('searchPage').removeChild(totalPosts[i])
     }
     totalPosts = [];
+    allPosts = [];
+    postNames = [];
     for (let i = 0; i < names.length; i++) {
         if (names[i] === nameV) {
 
@@ -105,6 +108,9 @@ document.getElementById("searchBtn").onclick = function () {
                     function (CurrentRecord) {
                         var link = CurrentRecord.val().Link;
                         var img = document.createElement('img');
+                        var postName = link.substring(link.indexOf("%2F")+3, link.indexOf(".png"))
+                        postName = postName.replaceAll("%20"," ")
+                        postNames.push(postName)
 
                         img.src = link
                         document.getElementById('searchPage').appendChild(img);
@@ -118,7 +124,24 @@ document.getElementById("searchBtn").onclick = function () {
         }
     }
 }
-
+function updateSearch(){
+    for (let i = 0; i < totalPosts.length; i++) {
+        document.getElementById('searchPage').removeChild(totalPosts[i])
+    }
+    totalPosts = [];
+    var searchText = document.getElementById("searchbar").value;
+    alert(postNames.length)
+    for (let i = 0; i < postNames; i++) {
+        alert("ejnmf")
+        if (postNames[i].contains(searchText)){
+            var img = document.createElement('img');
+            img.src = allPosts[i][0]
+            document.getElementById('searchPage').appendChild(img);
+            totalPosts.push(img);
+        }
+    }
+    // alert(document.getElementById("searchbar").value)
+}
 document.getElementById("myprofileBtn").onclick = function () {
     hideMainDivs();
     document.getElementById("myprofilePage").hidden = false;
