@@ -60,17 +60,18 @@ document.getElementById("enterBtn").onclick = function () {
                             alert("incorrect")
                         }
                     } else {
-                        firebase.database().ref("Users/" + nameV).set({
-                            Name: nameV,
-                            Email: emailV,
-                            Password: passWV,
-                            Followers: 0,
-
-                        });
-                        document.getElementById("signinScreen").hidden = true;
-                        document.getElementById("app").hidden = false;
-                        hideMainDivs();
-                        document.getElementById("homePage").hidden = true;
+                        alert("We can't seem to find your account, would you like to sign up?")
+                        // firebase.database().ref("Users/" + nameV).set({
+                        //     Name: nameV,
+                        //     Email: emailV,
+                        //     Password: passWV,
+                        //     Followers: 0,
+                        //
+                        // });
+                        // document.getElementById("signinScreen").hidden = true;
+                        // document.getElementById("app").hidden = false;
+                        // hideMainDivs();
+                        // document.getElementById("homePage").hidden = true;
                     }
                 }
             });
@@ -80,6 +81,91 @@ document.getElementById("enterBtn").onclick = function () {
     }
 }
 
+document.getElementById("signup").onclick = function() {
+    document.getElementById("signinScreen").hidden = true;
+    document.getElementById("signupScreen").hidden = false;
+}
+
+document.getElementById("signupBack").onclick = function() {
+    document.getElementById("signinScreen").hidden = false;
+    document.getElementById("signupScreen").hidden = true;
+}
+
+document.getElementById("signupenterBtn").onclick = function() {
+    nameV = document.getElementById("signUpNamebox").value;
+    emailV = document.getElementById("signUpEmailbox").value;
+    passWV = document.getElementById("signUpPassbox").value;
+
+    if (!(nameV == "") && !(emailV == "") && !(passWV == "")) {
+        var alreadyExists = false;
+
+        // do {
+        firebase.database().ref("Users").once('value', function (users) {
+            if (users.exists()) {
+                users.forEach(function (user) {
+                    if (user.val().Name === nameV) {
+                        if (user.val().Email === emailV && user.val().Password === passWV) {
+                            alert("You already have an account, welcome back");
+                            alreadyExists = true;
+
+                            firebase.database().ref("Users/" + nameV + "/Email").on('value', function (snapshot) {
+                                emailV = snapshot.val();
+                                loggedIN = true;
+                                firebase.database().ref('Users').once('value', function (allRecords) {
+                                    allRecords.forEach(
+                                        function (CurrentRecord) {
+                                            var name = CurrentRecord.val().Name;
+                                            names.push(name);
+                                        }
+                                    )
+                                });
+                            });
+
+                            loggedIN = true;
+                            document.getElementById("signupScreen").hidden = true;
+                            document.getElementById("app").hidden = false;
+                            hideMainDivs();
+                            document.getElementById("homePage").hidden = true;
+                        } else {
+                            alert("Username already taken, please try again")
+                            alreadyExists = true;
+                        }
+                    }
+                });
+            }
+            if (!alreadyExists) {
+                firebase.database().ref("Users/" + nameV).set({
+                    Name: nameV,
+                    Email: emailV,
+                    Password: passWV,
+                    Followers: 0,
+
+                });
+                loggedIN == true;
+
+                firebase.database().ref("Users/" + nameV + "/Email").on('value', function (snapshot) {
+                    emailV = snapshot.val();
+                    loggedIN = true;
+                    firebase.database().ref('Users').once('value', function (allRecords) {
+                        allRecords.forEach(
+                            function (CurrentRecord) {
+                                var name = CurrentRecord.val().Name;
+                                names.push(name);
+                            }
+                        )
+                    });
+                });
+
+                alert("Welcome aboard")
+                document.getElementById("signupScreen").hidden = true;
+                document.getElementById("app").hidden = false;
+                hideMainDivs();
+                document.getElementById("homePage").hidden = true;
+            }
+        });
+
+    }
+}
 
 
 document.getElementById("homeBtn").onclick = function () {
@@ -141,6 +227,7 @@ function updateSearch(){
     }
     // alert(document.getElementById("searchbar").value)
 }
+
 document.getElementById("myprofileBtn").onclick = function () {
     hideMainDivs();
     document.getElementById("myprofilePage").hidden = false;
