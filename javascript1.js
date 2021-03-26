@@ -17,7 +17,7 @@ var yourPosts = [];
 var imageVs = [];
 var imgName, imgUrl;
 var reader;
-
+var loggedIN = false;
 document.getElementById("enterBtn").onclick = function () {
     nameV = document.getElementById("namebox").value;
     emailV = document.getElementById("emailbox").value;
@@ -25,41 +25,43 @@ document.getElementById("enterBtn").onclick = function () {
 
     if (!(nameV == "") && !(emailV == "") && !(passWV == "")) {
 
+            firebase.database().ref("Users/" + nameV).on('value', function (snapshot) {
+                if (!loggedIN) {
+                    if (snapshot.exists()) {
+                        var passpass;
+                        firebase.database().ref("Users/" + nameV + "/Password").on('value', function (snapshot) {
+                            passpass = snapshot.val();
+                        });
 
-        firebase.database().ref("Users/"+nameV).on('value', function (snapshot) {
-            if (snapshot.exists()) {
-                var passpass;
-                firebase.database().ref("Users/"+nameV+"/Password").on('value', function(snapshot) {
-                    passpass = snapshot.val();
-                });
+                        if (passWV === passpass) {
+                            alert("Welcome!");
+                            firebase.database().ref("Users/" + nameV + "/Email").on('value', function (snapshot) {
+                                emailV = snapshot.val();
+                                loggedIN = true;
+                            });
 
-                if (passWV ===passpass) {
-                    alert("Welcome!");
-                    firebase.database().ref("Users/"+nameV+"/Email").on('value', function(snapshot) {
-                        emailV = snapshot.val();
-                    });
+                            document.getElementById("signinScreen").hidden = true;
+                            document.getElementById("app").hidden = false;
+                            hideMainDivs();
+                            document.getElementById("homePage").hidden = true;
+                        } else {
+                            alert("incorrect")
+                        }
+                    } else {
+                        firebase.database().ref("Users/" + nameV).set({
+                            Name: nameV,
+                            Email: emailV,
+                            Password: passWV,
+                            Followers: 0,
 
-                    document.getElementById("signinScreen").hidden = true;
-                    document.getElementById("app").hidden = false;
-                    hideMainDivs();
-                    document.getElementById("homePage").hidden = true;
-                } else {
-                    alert("Incorrect password");
+                        });
+                        document.getElementById("signinScreen").hidden = true;
+                        document.getElementById("app").hidden = false;
+                        hideMainDivs();
+                        document.getElementById("homePage").hidden = true;
+                    }
                 }
-            } else {
-                firebase.database().ref("Users/"+nameV).set({
-                    Name:nameV,
-                    Email: emailV,
-                    Password: passWV,
-                    Followers: 0,
-
-                });
-                document.getElementById("signinScreen").hidden = true;
-                document.getElementById("app").hidden = false;
-                hideMainDivs();
-                document.getElementById("homePage").hidden = true;
-            }
-        });
+            });
 
     } else {
         alert("Your password, email, or name field is empty");
@@ -120,6 +122,7 @@ document.getElementById("pfp").onclick = function() {
         reader.readAsDataURL(files[0]);
     }
     input.click();
+
 
     imgName = "profile";
     var uploadTask = firebase.storage().ref('Image/'+imgName+".png").put(files[0]);
