@@ -110,6 +110,7 @@ document.getElementById("searchBtn").onclick = function () {
                         var img = document.createElement('img');
                         var postName = link.substring(link.indexOf("%2F")+3, link.indexOf(".png"))
                         postName = postName.replaceAll("%20"," ")
+                        postName = postName.toLowerCase();
                         postNames.push(postName)
 
                         img.src = link
@@ -130,10 +131,8 @@ function updateSearch(){
     }
     totalPosts = [];
     var searchText = document.getElementById("searchbar").value;
-    alert(postNames.length)
-    for (let i = 0; i < postNames; i++) {
-        alert("ejnmf")
-        if (postNames[i].contains(searchText)){
+    for (let i = 0; i < postNames.length; i++) {
+        if (postNames[i].includes(searchText.toLowerCase())){
             var img = document.createElement('img');
             img.src = allPosts[i][0]
             document.getElementById('searchPage').appendChild(img);
