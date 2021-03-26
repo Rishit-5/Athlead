@@ -28,12 +28,13 @@ document.getElementById("enterBtn").onclick = function () {
 
         firebase.database().ref("Users/"+nameV).on('value', function (snapshot) {
             if (snapshot.exists()) {
-                var passpass;
-                firebase.database().ref("Users/"+nameV+"/Password").on('value', function(snapshot) {
-                    passpass = snapshot.val();
-                });
 
-                if (passWV ===passpass) {
+                var passpass = "";
+                    firebase.database().ref("Users/" + nameV + "/Password").on('value', function (snapshot) {
+                        passpass = snapshot.val();
+                    });
+
+                if (passWV === passpass) {
                     alert("Welcome!");
                     firebase.database().ref("Users/"+nameV+"/Email").on('value', function(snapshot) {
                         emailV = snapshot.val();
@@ -144,6 +145,7 @@ document.getElementById("pfp").onclick = function() {
         });
 
 }
+
 document.getElementById("post").onclick = function() {
     alert("testtststst")
 }
