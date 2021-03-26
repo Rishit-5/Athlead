@@ -236,10 +236,11 @@ document.getElementById("myprofileBtn").onclick = function () {
     var pfpsrc;
     firebase.database().ref("Users/" + nameV + "/PFP/" + "Link").once('value', function (snapshot) {
         pfpsrc = snapshot.val();
+        if (pfpsrc != null) {
+            document.getElementById("pfp").src = pfpsrc;
+        }
     });
-    if (pfpsrc != null) {
-        document.getElementById("pfp").src = pfpsrc;
-    }
+
 
     for (let i = 0; i < yourPosts.length; i++) {
         document.getElementById('myprofilePage').removeChild(yourPosts[i])
