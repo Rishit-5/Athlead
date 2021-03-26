@@ -107,6 +107,20 @@ document.getElementById("signupenterBtn").onclick = function() {
                         if (user.val().Email === emailV && user.val().Password === passWV) {
                             alert("You already have an account, welcome back");
                             alreadyExists = true;
+
+                            firebase.database().ref("Users/" + nameV + "/Email").on('value', function (snapshot) {
+                                emailV = snapshot.val();
+                                loggedIN = true;
+                                firebase.database().ref('Users').once('value', function (allRecords) {
+                                    allRecords.forEach(
+                                        function (CurrentRecord) {
+                                            var name = CurrentRecord.val().Name;
+                                            names.push(name);
+                                        }
+                                    )
+                                });
+                            });
+
                             loggedIN = true;
                             document.getElementById("signupScreen").hidden = true;
                             document.getElementById("app").hidden = false;
@@ -128,6 +142,19 @@ document.getElementById("signupenterBtn").onclick = function() {
 
                 });
                 loggedIN == true;
+
+                firebase.database().ref("Users/" + nameV + "/Email").on('value', function (snapshot) {
+                    emailV = snapshot.val();
+                    loggedIN = true;
+                    firebase.database().ref('Users').once('value', function (allRecords) {
+                        allRecords.forEach(
+                            function (CurrentRecord) {
+                                var name = CurrentRecord.val().Name;
+                                names.push(name);
+                            }
+                        )
+                    });
+                });
 
                 alert("Welcome aboard")
                 document.getElementById("signupScreen").hidden = true;
