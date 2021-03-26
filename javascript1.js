@@ -117,7 +117,7 @@ document.getElementById("searchBtn").onclick = function () {
                         document.getElementById('searchPage').appendChild(img);
                         totalPosts.push(img);
                         var type = CurrentRecord.val().Type;
-                        var arrayA = [link, type];
+                        var arrayA = [link, type, names[i]];
                         allPosts.push(arrayA);
                     }
                 )
