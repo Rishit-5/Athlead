@@ -18,6 +18,9 @@ var imageVs = [];
 var imgName, imgUrl;
 var reader;
 var loggedIN = false;
+var allPosts = [];
+var totalPosts = [];
+
 document.getElementById("enterBtn").onclick = function () {
     nameV = document.getElementById("namebox").value;
     emailV = document.getElementById("emailbox").value;
@@ -38,6 +41,14 @@ document.getElementById("enterBtn").onclick = function () {
                             firebase.database().ref("Users/" + nameV + "/Email").on('value', function (snapshot) {
                                 emailV = snapshot.val();
                                 loggedIN = true;
+                                firebase.database().ref('Users').once('value', function (allRecords) {
+                                    allRecords.forEach(
+                                        function (CurrentRecord) {
+                                            var name = CurrentRecord.val().Name;
+                                            names.push(name);
+                                        }
+                                    )
+                                });
                             });
 
                             document.getElementById("signinScreen").hidden = true;
@@ -74,10 +85,38 @@ document.getElementById("homeBtn").onclick = function () {
     hideMainDivs();
     document.getElementById("homePage").hidden = false;
 }
+let names = [];
 
 document.getElementById("searchBtn").onclick = function () {
     hideMainDivs();
     document.getElementById("searchPage").hidden = false;
+    // names = getNames(names)
+    for (let i = 0; i < totalPosts.length; i++) {
+        document.getElementById('searchPage').removeChild(totalPosts[i])
+    }
+    totalPosts = [];
+    for (let i = 0; i < names.length; i++) {
+        if (names[i] === nameV) {
+
+        }
+        else {
+            firebase.database().ref('Users/' + names[i] + "/Posts").once('value', function (allRecords) {
+                allRecords.forEach(
+                    function (CurrentRecord) {
+                        var link = CurrentRecord.val().Link;
+                        var img = document.createElement('img');
+
+                        img.src = link
+                        document.getElementById('searchPage').appendChild(img);
+                        totalPosts.push(img);
+                        var type = CurrentRecord.val().Type;
+                        var arrayA = [link, type];
+                        allPosts.push(arrayA);
+                    }
+                )
+            })
+        }
+    }
 }
 
 document.getElementById("myprofileBtn").onclick = function () {
@@ -86,13 +125,17 @@ document.getElementById("myprofileBtn").onclick = function () {
     document.getElementById("myprofile").hidden = false;
     document.getElementById("postingPage").hidden = true;
     var pfpsrc;
-    firebase.database().ref("Users/" + nameV + "/PFP/" + "Link").on('value', function (snapshot) {
+    firebase.database().ref("Users/" + nameV + "/PFP/" + "Link").once('value', function (snapshot) {
         pfpsrc = snapshot.val();
     });
-    document.getElementById("pfp").src = pfpsrc;
+    if (pfpsrc != null) {
+        document.getElementById("pfp").src = pfpsrc;
+    }
+
     for (let i = 0; i < yourPosts.length; i++) {
         document.getElementById('myprofilePage').removeChild(yourPosts[i])
     }
+    yourPosts = [];
     firebase.database().ref("Users/"+nameV+"/Posts").once('value', function (snapshot) {
         snapshot.forEach(function (child) {
             var str = "Users/"+nameV+"/Posts/"+child.key + "/Link";
