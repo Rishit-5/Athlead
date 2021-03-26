@@ -85,15 +85,18 @@ document.getElementById("myprofileBtn").onclick = function () {
     document.getElementById("myprofilePage").hidden = false;
     document.getElementById("myprofile").hidden = false;
     document.getElementById("postingPage").hidden = true;
+    var pfpsrc;
+    firebase.database().ref("Users/" + nameV + "/PFP/" + "Link").on('value', function (snapshot) {
+        pfpsrc = snapshot.val();
+    });
+    document.getElementById("pfp").src = pfpsrc;
     for (let i = 0; i < yourPosts.length; i++) {
         document.getElementById('myprofilePage').removeChild(yourPosts[i])
     }
     firebase.database().ref("Users/"+nameV+"/Posts").once('value', function (snapshot) {
         snapshot.forEach(function (child) {
             var str = "Users/"+nameV+"/Posts/"+child.key + "/Link";
-            // child.getRef().on('value', function (snapshot) {
-            //     //images.add( snapshot.getChild("Link").val();
-            // });
+
             firebase.database().ref(str).on('value', function (snapshot) {
                 var img = document.createElement('img');
 
@@ -118,33 +121,34 @@ document.getElementById("pfp").onclick = function() {
         reader = new FileReader();
         reader.onload = function(){
             document.getElementById("pfp").src = reader.result;
+            imgName = "profile";
+            var uploadTask = firebase.storage().ref('Image/'+imgName+".png").put(files[0]);
+
+            uploadTask.on('state_changed', function (snapshot){
+                    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    document.getElementById('upProgress').innerHTML = 'Upload' + progress+'%';
+                },
+                function(error){
+                    alert('error')
+                },
+                function(){
+                    uploadTask.snapshot.ref.getDownloadURL().then(function(url){
+                            imgUrl = url;
+
+                            firebase.database().ref('Users/'+nameV+"/PFP").set({
+                                Link: imgUrl,
+
+                            });
+                        }
+                    );
+                });
         }
         reader.readAsDataURL(files[0]);
     }
     input.click();
 
 
-    imgName = "profile";
-    var uploadTask = firebase.storage().ref('Image/'+imgName+".png").put(files[0]);
 
-    uploadTask.on('state_changed', function (snapshot){
-            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            document.getElementById('upProgress').innerHTML = 'Upload' + progress+'%';
-        },
-        function(error){
-            alert('error')
-        },
-        function(){
-            uploadTask.snapshot.ref.getDownloadURL().then(function(url){
-                    imgUrl = url;
-
-                    firebase.database().ref('Users/'+nameV+"/PFP").set({
-                        Link: imgUrl,
-
-                    });
-                }
-            );
-        });
 
 }
 document.getElementById("post").onclick = function() {
