@@ -258,7 +258,7 @@ document.getElementById("myprofileBtn").onclick = function () {
                     hideMainDivs();
 
                 }
-                document.getElementById('myprofilePage').appendChild(img);
+                document.getElementById('myprofile').appendChild(img);
                 yourPosts.push(img);
             })
         });
@@ -371,3 +371,54 @@ document.getElementById("post").onclick = function(){
 }
 
 
+for (const dropdown of document.querySelectorAll(".custom-select-wrapper")) {
+    dropdown.addEventListener('click', function () {
+        this.querySelector('.custom-select').classList.toggle('open');
+    })
+}
+
+var postType = "";
+for (const option of document.querySelectorAll(".custom-option")) {
+    option.addEventListener('click', function () {
+        if (!this.classList.contains('selected')) {
+            this.parentNode.querySelector('.custom-option.selected').classList.remove('selected');
+            this.classList.add('selected');
+            this.closest('.custom-select').querySelector('.custom-select__trigger span').textContent = this.textContent;
+
+            // alert(this.innerHTML);
+
+            switch (this.innerHTML) {
+                case "Recipe":
+                    document.getElementById("recipe").hidden = false;
+                    document.getElementById("workout").hidden = true;
+                    document.getElementById("quote").hidden = true;
+
+
+                    break;
+                case "Workout":
+                    document.getElementById("recipe").hidden = true;
+                    document.getElementById("workout").hidden = false;
+                    document.getElementById("quote").hidden = true;
+
+
+                    break;
+                case "Quote":
+                    document.getElementById("recipe").hidden = true;
+                    document.getElementById("workout").hidden = true;
+                    document.getElementById("quote").hidden = false;
+
+
+                    break;
+            }
+        }
+    })
+}
+
+
+window.addEventListener('click', function (e) {
+    for (const select of document.querySelectorAll('.custom-select')) {
+        if (!select.contains(e.target)) {
+            select.classList.remove('open');
+        }
+    }
+});
