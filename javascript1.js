@@ -470,15 +470,15 @@ document.getElementById("upload").onclick = function(){
             alertVar = alertVar+"; Please select a valid post type";
             break;
         case "recipe":
-            if (document.getElementById("prepTimetext").innerHTML==="") {
+            if (document.getElementById("prepTimetext").value==="") {
                 passesTest = false;
                 alertVar = alertVar+"; Please specify the meal prep time";
             }
-            if (document.getElementById("cooktimeText").innerHTML==="") {
+            if (document.getElementById("cooktimeText").value==="") {
                 passesTest = false;
                 alertVar = alertVar+"; Please specify the cooking time required";
             }
-            if (document.getElementById("servingSize").innerHTML==="") {
+            if (document.getElementById("servingSize").value==="") {
                 passesTest = false;
                 alertVar = alertVar+"; Please specify the serving size";
             }
@@ -529,9 +529,9 @@ document.getElementById("upload").onclick = function(){
                                     Link: imgUrl,
                                     Type: postType,
                                     Likes: 0,
-                                    PrepTime: document.getElementById("prepTimetext").innerHTML,
-                                    CookTime: document.getElementById("cooktimeText").innerHTML,
-                                    ServingSize: document.getElementById("servingSize").innerHTML,
+                                    PrepTime: document.getElementById("prepTimetext").value,
+                                    CookTime: document.getElementById("cooktimeText").value,
+                                    ServingSize: document.getElementById("servingSize").value,
                                     Ingredients: document.getElementById("ingredientBox").innerHTML,
                                     Method: document.getElementById("methodBox").innerHTML
                                 });
@@ -578,7 +578,13 @@ for (const dropdown of document.querySelectorAll(".custom-select-wrapper")) {
 for (const option of document.querySelectorAll(".custom-option")) {
     option.addEventListener('click', function () {
         if (!this.classList.contains('selected')) {
-            this.parentNode.querySelector('.custom-option.selected').classList.remove('selected');
+            // if (!(this.parentNode.querySelector('.custom-option.selected') == null)) {
+            try {
+                this.parentNode.querySelector('.custom-option.selected').classList.remove('selected');
+            }catch (e) {
+
+            }
+            // }
             this.classList.add('selected');
             this.closest('.custom-select').querySelector('.custom-select__trigger span').textContent = this.textContent;
 
