@@ -125,8 +125,8 @@
 <!--                    <input id="quoteBox" type="text" required=""/>-->
 <!--                    <label>Insert Quote Here</label>-->
 <!--                </div>-->
-
-                <span class="quotetext" role="textbox" contenteditable></span>
+                <label>Type your quote here</label>
+                <span id="quoteBox" class="quotetext" role="textbox" contenteditable content="Type your quote here"></span>
             </div>
 
             <div id = "recipe" hidden = "hidden">
@@ -134,14 +134,28 @@
 
                 <p>Prep time:<input type="text" id="prepTimetext"> mins</p>
                 <p>Cook time:<input type="text" id="cooktimeText"> mins</p>
+                <p>Serves:<input type="text" id="servingSize"> people</p>
+                <br>
+                <label>Type a bulleted list of ingredients with measurements here</label>
+                <span id="ingredientBox" class="quotetext" role="textbox" contenteditable content="Type a bulleted list of ingredients with measurements here"></span>
+                <br>
+                <label>Type your method of preparation here</label>
+                <span id="methodBox" class="quotetext" role="textbox" contenteditable content="Type your method of preparation here"></span>
             </div>
 
             <div id = "workout" hidden = "hidden">
                 <p>THIS THE WORKOUT PAGE</p>
+                <br>
+                <label>Write a description of the workout. For example the type of workout, what muscles it hits, the split, etc.</label>
+                <span id="workoutDescBox" class="quotetext" role="textbox" contenteditable content="Write a description of the workout. For example the type of workout, what muscles it hits, the split, etc."></span>
+                <br>
+                <label>Type a step by step walkthrough of the workout (sit ups 3x15 could be one exercise)</label>
+                <span id="workoutBox" class="quotetext" role="textbox" contenteditable content="Type a step by step walkthrough of the workout (sit ups 3x15 could be one exercise)"></span>
+
             </div>
 
             <br>
-            <button id="post">Upload</button>
+            <button id="upload">Upload</button>
 
         </div>
 

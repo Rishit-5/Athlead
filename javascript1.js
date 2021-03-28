@@ -21,6 +21,7 @@ var loggedIN = false;
 var allPosts = [];
 var totalPosts = [];
 var postNames = [];
+var postType = "";
 
 document.getElementById("enterBtn").onclick = function () {
     nameV = document.getElementById("namebox").value;
@@ -279,7 +280,7 @@ document.getElementById("pfp").onclick = function() {
 
             uploadTask.on('state_changed', function (snapshot){
                     var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    document.getElementById('upProgress').innerHTML = 'Upload' + progress+'%';
+                    document.getElementById('upProgress').value = 'Upload' + progress+'%';
                 },
                 function(error){
                     alert('error')
@@ -303,9 +304,6 @@ document.getElementById("pfp").onclick = function() {
 
 
 
-}
-document.getElementById("post").onclick = function() {
-    alert("testtststst")
 }
 document.getElementById("postBtn").onclick = function () {
     document.getElementById("myprofile").hidden = true;
@@ -343,30 +341,120 @@ document.getElementById("simage").onclick = function(){
 
 }
 
-document.getElementById("post").onclick = function(){
-    imgName = document.getElementById("namebox1").value;
-    var uploadTask = firebase.storage().ref('Image/'+imgName+".png").put(files[0]);
+document.getElementById("upload").onclick = function(){
+    // alert(files[0]);
+    var passesTest = true;
+    var alertVar = "";
 
-    uploadTask.on('state_changed', function (snapshot){
-            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            document.getElementById('upProgress').innerHTML = 'Upload' + progress+'%';
-        },
-        function(error){
-            alert('error')
-        },
-        function(){
-            uploadTask.snapshot.ref.getDownloadURL().then(function(url){
-                    imgUrl = url;
+    if (files[0]==null) {
+        passesTest = false;
+        alertVar = alertVar+"; You don't have an image selected";
+    }
+    if (document.getElementById("namebox1").value === "") {
+        passesTest = false;
+        alertVar = alertVar+"; Please put a permissible title";
+    }
 
-                    firebase.database().ref('Users/'+nameV+"/Posts/" + imgName).set({
-                        Link: imgUrl,
-                        Type: document.getElementById("postType").value
+    switch (postType) {
+        case "":
+            passesTest = false;
+            alertVar = alertVar+"; Please select a valid post type";
+            break;
+        case "recipe":
+            if (document.getElementById("prepTimetext").innerHTML==="") {
+                passesTest = false;
+                alertVar = alertVar+"; Please specify the meal prep time";
+            }
+            if (document.getElementById("cooktimeText").innerHTML==="") {
+                passesTest = false;
+                alertVar = alertVar+"; Please specify the cooking time required";
+            }
+            if (document.getElementById("servingSize").innerHTML==="") {
+                passesTest = false;
+                alertVar = alertVar+"; Please specify the serving size";
+            }
+            if (document.getElementById("ingredientBox").innerHTML==="") {
+                passesTest = false;
+                alertVar = alertVar+"; Please specify the ingredients";
+            }
+            if (document.getElementById("methodBox").innerHTML==="") {
+                passesTest = false;
+                alertVar = alertVar+"; Please type the method of the recipe";
+            }
+            break;
+        case "workout":
+            if (document.getElementById("workoutDescBox").innerHTML==="") {
+                passesTest = false;
+                alertVar = alertVar+"; Please write a workout description";
+            }
+            if (document.getElementById("workoutBox").innerHTML==="") {
+                passesTest = false;
+                alertVar = alertVar+"; Please write the workout walkthrough";
+            }
+            break;
+        case "quote":
+            if (document.getElementById("quoteBox").innerHTML==="") {
+                passesTest = false;
+                alertVar = alertVar+"; Please put a quote in the field required";
+            }
+            break;
+    }
 
-                    });
-                    alert('image added successfully');
-                }
-            );
-        });
+    if (passesTest) {
+        imgName = document.getElementById("namebox1").value;
+        var uploadTask = firebase.storage().ref('Image/' + imgName + ".png").put(files[0]);
+        uploadTask.on('state_changed', function (snapshot) {
+                var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                document.getElementById('upProgress').innerHTML = 'Upload' + progress + '%';
+            },
+            function (error) {
+            alert(error)
+                alert('error')
+            },
+            function () {
+                uploadTask.snapshot.ref.getDownloadURL().then(function (url) {
+                        imgUrl = url;
+                        switch (postType) {
+                            case "recipe":
+                                firebase.database().ref('Users/' + nameV + "/Posts/" + imgName).set({
+                                    Link: imgUrl,
+                                    Type: postType,
+                                    PrepTime: document.getElementById("prepTimetext").innerHTML,
+                                    CookTime: document.getElementById("cooktimeText").innerHTML,
+                                    ServingSize: document.getElementById("servingSize").innerHTML,
+                                    Ingredients: document.getElementById("ingredientBox").innerHTML,
+                                    Method: document.getElementById("methodBox").innerHTML
+                                });
+                                break;
+                            case "workout":
+                                firebase.database().ref('Users/' + nameV + "/Posts/" + imgName).set({
+                                    Link: imgUrl,
+                                    Type: postType,
+                                    Description: document.getElementById("workoutDescBox").innerHTML,
+                                    Workout: document.getElementById("workoutBox").innerHTML,
+                                });
+                                break;
+                            case "quote":
+                                firebase.database().ref('Users/' + nameV + "/Posts/" + imgName).set({
+                                    Link: imgUrl,
+                                    Type: postType,
+                                    Quote: document.getElementById("quoteBox").innerHTML,
+                                });
+                                break;
+                        }
+                        // firebase.database().ref('Users/' + nameV + "/Posts/" + imgName).set({
+                        //     Link: imgUrl,
+                        //     Type: postType
+                        //
+                        // });
+                        alert('image added successfully');
+                    }
+                );
+            });
+
+    } else {
+        alert(alertVar);
+    }
 
 }
 
@@ -377,7 +465,6 @@ for (const dropdown of document.querySelectorAll(".custom-select-wrapper")) {
     })
 }
 
-var postType = "";
 for (const option of document.querySelectorAll(".custom-option")) {
     option.addEventListener('click', function () {
         if (!this.classList.contains('selected')) {
@@ -385,7 +472,7 @@ for (const option of document.querySelectorAll(".custom-option")) {
             this.classList.add('selected');
             this.closest('.custom-select').querySelector('.custom-select__trigger span').textContent = this.textContent;
 
-            // alert(this.innerHTML);
+            // alert(this.value);
 
             switch (this.innerHTML) {
                 case "Recipe":
@@ -393,21 +480,21 @@ for (const option of document.querySelectorAll(".custom-option")) {
                     document.getElementById("workout").hidden = true;
                     document.getElementById("quote").hidden = true;
 
-
+                    postType = "recipe";
                     break;
                 case "Workout":
                     document.getElementById("recipe").hidden = true;
                     document.getElementById("workout").hidden = false;
                     document.getElementById("quote").hidden = true;
 
-
+                    postType = "workout";
                     break;
                 case "Quote":
                     document.getElementById("recipe").hidden = true;
                     document.getElementById("workout").hidden = true;
                     document.getElementById("quote").hidden = false;
 
-
+                    postType = "quote";
                     break;
             }
         }

@@ -347,7 +347,7 @@ button:after {
     line-height: 20px;
 }
 
-.quotetext[contenteditable]:empty::before {
-    content: "Type your quote here";
+.quotetext[content]:before {
+    /*content: "Type your quote here";*/
     color: gray;
 }
