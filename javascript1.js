@@ -21,6 +21,7 @@ var loggedIN = false;
 var allPosts = [];
 var totalPosts = [];
 var postNames = [];
+var postsonpostpage = [];
 
 document.getElementById("enterBtn").onclick = function () {
     nameV = document.getElementById("namebox").value;
@@ -200,6 +201,24 @@ document.getElementById("searchBtn").onclick = function () {
                         postNames.push(postName)
 
                         img.src = link
+                        img.onclick = function () {
+
+                            hideMainDivs();
+                            document.getElementById("postpage").hidden = false;
+                            for (let i = 0; i < postsonpostpage.length; i++) {
+                                document.getElementById('postonpostpage').removeChild(postsonpostpage[i])
+                            }
+                            postsonpostpage = [];
+                            var img2 = document.createElement('img');
+                            img2.src = img.src
+                            img2.className = "postimageonpostpage"
+
+                            document.getElementById('postonpostpage').appendChild(img2);
+                            postsonpostpage.push(img2);
+
+
+
+                        }
                         document.getElementById('searchPage').appendChild(img);
                         totalPosts.push(img);
                         var type = CurrentRecord.val().Type;
@@ -221,6 +240,24 @@ function updateSearch(){
         if (postNames[i].includes(searchText.toLowerCase())){
             var img = document.createElement('img');
             img.src = allPosts[i][0]
+            img.onclick = function () {
+                hideMainDivs();
+                var clicked = i;
+                document.getElementById("postpage").hidden = false;
+                for (let j = 0; j < postsonpostpage.length; j++) {
+                    document.getElementById('postonpostpage').removeChild(postsonpostpage[j])
+                }
+                postsonpostpage = [];
+                var img2 = document.createElement('img');
+                img2.src = allPosts[i][0];
+                img2.className = "postimageonpostpage"
+
+                document.getElementById('postonpostpage').appendChild(img2);
+                postsonpostpage.push(img2);
+
+
+
+            }
             document.getElementById('searchPage').appendChild(img);
             totalPosts.push(img);
         }
@@ -256,6 +293,19 @@ document.getElementById("myprofileBtn").onclick = function () {
                 img.src = snapshot.val();
                 img.onclick = function () {
                     hideMainDivs();
+                    document.getElementById("postpage").hidden = false;
+                    for (let i = 0; i < postsonpostpage.length; i++) {
+                        document.getElementById('postonpostpage').removeChild(postsonpostpage[i])
+                    }
+                    postsonpostpage = [];
+                    var img2 = document.createElement('img');
+                    img2.src = img.src
+                    img2.className = "postimageonpostpage"
+
+                    document.getElementById('postonpostpage').appendChild(img2);
+                    postsonpostpage.push(img2);
+
+
 
                 }
                 document.getElementById('myprofilePage').appendChild(img);
@@ -265,6 +315,14 @@ document.getElementById("myprofileBtn").onclick = function () {
     });
 
 
+}
+function heartchecked() {
+    var checkBox = document.getElementById("heart");
+    if (checkBox.checked === true){
+
+    } else {
+
+    }
 }
 document.getElementById("pfp").onclick = function() {
     var input = document.createElement('input');
@@ -325,6 +383,8 @@ function hideMainDivs() {
     document.getElementById("searchPage").hidden = true;
     document.getElementById("homePage").hidden = true;
     document.getElementById("myprofilePage").hidden = true;
+    document.getElementById("postpage").hidden = true;
+
 }
 
 
@@ -369,5 +429,6 @@ document.getElementById("post").onclick = function(){
         });
 
 }
+
 
 

@@ -28,9 +28,13 @@
     </div>
     <button id="enterBtn" type="button" class="btn">submit</button><br><br>
     <button id="signup">SIGN UP</button>
+
+    <br>
+
+
 </div>
 
-<div id = "signupScreen" class = "box" hidden = hidden >
+<div id = "signupScreen" class = "box" hidden = hidden>
 
     <span class="text-center">Sign Up</span>
 
@@ -49,6 +53,7 @@
     </div>
     <button id="signupenterBtn" type="button" class="btn">SIGN UP</button><br><br>
     <button id="signupBack">BACK</button>
+
 </div>
 
 
@@ -62,6 +67,7 @@
 
     <div id="searchPage">
         Search <input id="searchbar" type="text" onkeyup="updateSearch()"/></input> <br><br>
+
     </div>
 
     <div id = "homePage">
@@ -114,6 +120,12 @@
 
     </div>
 
+</div>
+<div id = "postpage" class = "postpage" hidden = "hidden">
+    <div id = "postonpostpage"></div>
+    <label><input type="checkbox" id = "heart" onclick="heartchecked()">
+        <div class="like-btn-svg" ></div>
+    </label>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/8.2.2/firebase-app.js"></script>
