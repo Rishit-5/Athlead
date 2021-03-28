@@ -25,6 +25,9 @@ var postsonpostpage = [];
 var currentref = "";
 var postName = "";
 var likes = 0;
+var postType = "";
+
+
 document.getElementById("enterBtn").onclick = function () {
     nameV = document.getElementById("namebox").value;
     emailV = document.getElementById("emailbox").value;
@@ -330,7 +333,7 @@ document.getElementById("myprofileBtn").onclick = function () {
 
 
                 }
-                document.getElementById('myprofilePage').appendChild(img);
+                document.getElementById('myprofile').appendChild(img);
                 yourPosts.push(img);
             })
         });
@@ -409,9 +412,7 @@ document.getElementById("pfp").onclick = function() {
 
 
 }
-document.getElementById("post").onclick = function() {
-    alert("testtststst")
-}
+
 document.getElementById("postBtn").onclick = function () {
     document.getElementById("myprofile").hidden = true;
     document.getElementById("postingPage").hidden = false;
@@ -449,34 +450,199 @@ document.getElementById("simage").onclick = function(){
     input.click();
 
 }
+document.getElementById("upload").onclick = function(){
+    // alert(files[0]);
+    var passesTest = true;
+    var alertVar = "";
 
-document.getElementById("post").onclick = function(){
-    imgName = document.getElementById("namebox1").value;
-    imgName = imgName.toLowerCase();
-    var uploadTask = firebase.storage().ref('Image/'+imgName+".png").put(files[0]);
+    if (files[0]==null) {
+        passesTest = false;
+        alertVar = alertVar+"; You don't have an image selected";
+    }
+    if (document.getElementById("namebox1").value === "") {
+        passesTest = false;
+        alertVar = alertVar+"; Please put a permissible title";
+    }
 
-    uploadTask.on('state_changed', function (snapshot){
-            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            document.getElementById('upProgress').innerHTML = 'Upload' + progress+'%';
-        },
-        function(error){
-            alert('error')
-        },
-        function(){
-            uploadTask.snapshot.ref.getDownloadURL().then(function(url){
-                    imgUrl = url;
+    switch (postType) {
+        case "":
+            passesTest = false;
+            alertVar = alertVar+"; Please select a valid post type";
+            break;
+        case "recipe":
+            if (document.getElementById("prepTimetext").innerHTML==="") {
+                passesTest = false;
+                alertVar = alertVar+"; Please specify the meal prep time";
+            }
+            if (document.getElementById("cooktimeText").innerHTML==="") {
+                passesTest = false;
+                alertVar = alertVar+"; Please specify the cooking time required";
+            }
+            if (document.getElementById("servingSize").innerHTML==="") {
+                passesTest = false;
+                alertVar = alertVar+"; Please specify the serving size";
+            }
+            if (document.getElementById("ingredientBox").innerHTML==="") {
+                passesTest = false;
+                alertVar = alertVar+"; Please specify the ingredients";
+            }
+            if (document.getElementById("methodBox").innerHTML==="") {
+                passesTest = false;
+                alertVar = alertVar+"; Please type the method of the recipe";
+            }
+            break;
+        case "workout":
+            if (document.getElementById("workoutDescBox").innerHTML==="") {
+                passesTest = false;
+                alertVar = alertVar+"; Please write a workout description";
+            }
+            if (document.getElementById("workoutBox").innerHTML==="") {
+                passesTest = false;
+                alertVar = alertVar+"; Please write the workout walkthrough";
+            }
+            break;
+        case "quote":
+            if (document.getElementById("quoteBox").innerHTML==="") {
+                passesTest = false;
+                alertVar = alertVar+"; Please put a quote in the field required";
+            }
+            break;
+    }
 
-                    firebase.database().ref('Users/'+nameV+"/Posts/" + imgName).set({
-                        Link: imgUrl,
-                        Type: document.getElementById("postType").value
+    if (passesTest) {
+        imgName = document.getElementById("namebox1").value;
+        var uploadTask = firebase.storage().ref('Image/' + imgName + ".png").put(files[0]);
+        uploadTask.on('state_changed', function (snapshot) {
+                var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                document.getElementById('upProgress').innerHTML = 'Upload' + progress + '%';
+            },
+            function (error) {
+                alert(error)
+                alert('error')
+            },
+            function () {
+                uploadTask.snapshot.ref.getDownloadURL().then(function (url) {
+                        imgUrl = url;
+                        switch (postType) {
+                            case "recipe":
+                                firebase.database().ref('Users/' + nameV + "/Posts/" + imgName).set({
+                                    Link: imgUrl,
+                                    Type: postType,
+                                    Likes: 0,
+                                    PrepTime: document.getElementById("prepTimetext").innerHTML,
+                                    CookTime: document.getElementById("cooktimeText").innerHTML,
+                                    ServingSize: document.getElementById("servingSize").innerHTML,
+                                    Ingredients: document.getElementById("ingredientBox").innerHTML,
+                                    Method: document.getElementById("methodBox").innerHTML
+                                });
+                                break;
+                            case "workout":
+                                firebase.database().ref('Users/' + nameV + "/Posts/" + imgName).set({
+                                    Link: imgUrl,
+                                    Type: postType,
+                                    Likes: 0,
+                                    Description: document.getElementById("workoutDescBox").innerHTML,
+                                    Workout: document.getElementById("workoutBox").innerHTML,
+                                });
+                                break;
+                            case "quote":
+                                firebase.database().ref('Users/' + nameV + "/Posts/" + imgName).set({
+                                    Link: imgUrl,
+                                    Type: postType,
+                                    Likes: 0,
+                                    Quote: document.getElementById("quoteBox").innerHTML,
+                                });
+                                break;
+                        }
+                        // firebase.database().ref('Users/' + nameV + "/Posts/" + imgName).set({
+                        //     Link: imgUrl,
+                        //     Type: postType
+                        //
+                        // });
+                        alert('image added successfully');
+                    }
+                );
+            });
 
-                    });
-                    alert('image added successfully');
-                }
-            );
-        });
+    } else {
+        alert(alertVar);
+    }
 
 }
+for (const dropdown of document.querySelectorAll(".custom-select-wrapper")) {
+    dropdown.addEventListener('click', function () {
+        this.querySelector('.custom-select').classList.toggle('open');
+    })
+}
+
+for (const option of document.querySelectorAll(".custom-option")) {
+    option.addEventListener('click', function () {
+        if (!this.classList.contains('selected')) {
+            this.parentNode.querySelector('.custom-option.selected').classList.remove('selected');
+            this.classList.add('selected');
+            this.closest('.custom-select').querySelector('.custom-select__trigger span').textContent = this.textContent;
+
+            // alert(this.value);
+
+            switch (this.innerHTML) {
+                case "Recipe":
+                    hidePostOps()
+                    document.getElementById("recipe").hidden = false;
+                    postType = "recipe";
+                    break;
+                case "Workout":
+                    hidePostOps()
+                    document.getElementById("workout").hidden = false;
+
+
+                    postType = "workout";
+                    break;
+                case "Quote":
+                    hidePostOps()
+                    document.getElementById("quote").hidden = false;
+
+                    postType = "quote";
+                    break;
+            }
+        }
+    })
+}
+
+
+window.addEventListener('click', function (e) {
+    for (const select of document.querySelectorAll('.custom-select')) {
+        if (!select.contains(e.target)) {
+            select.classList.remove('open');
+        }
+    }
+});
+// document.getElementById("post").onclick = function(){
+//     imgName = document.getElementById("namebox1").value;
+//     imgName = imgName.toLowerCase();
+//     var uploadTask = firebase.storage().ref('Image/'+imgName+".png").put(files[0]);
+//
+//     uploadTask.on('state_changed', function (snapshot){
+//             var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//             document.getElementById('upProgress').innerHTML = 'Upload' + progress+'%';
+//         },
+//         function(error){
+//             alert('error')
+//         },
+//         function(){
+//             uploadTask.snapshot.ref.getDownloadURL().then(function(url){
+//                     imgUrl = url;
+//
+//                     firebase.database().ref('Users/'+nameV+"/Posts/" + imgName).set({
+//                         Link: imgUrl,
+//                         Type: document.getElementById("postType").value
+//
+//                     });
+//                     alert('image added successfully');
+//                 }
+//             );
+//         });
+//
+// }
 
 
 

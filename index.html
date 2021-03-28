@@ -79,6 +79,8 @@
             <img class = "profilepic" id = "pfp" src="resources/select image picture.PNG" height="100" width="100"/>
             <p>THIS IS THE PROFILE PAGE</p>
             <button id="postBtn">POST</button>
+            <br>
+            <br>
         </div>
 
 
@@ -90,31 +92,74 @@
                 <!--                <button id="workoutBtn">WORKOUT</button>-->
                 <!--                <button id="postBackBtn">BACK</button>-->
                 <img id = "myimg"> <label id = "upProgress"></label> <br> <br>
-                Name <input id="namebox1" type="text"/></input> <br><br>
+                <!--                Name <input id="namebox1" type="text"/></input> <br><br>-->
 
-                <select id="postType" name="PostType">
-                    <option id = "rec" value="Recipe">Recipe</option>
-                    <option id = "wor" value="Workout">Workout</option>
-                    <option id = "quo" value="Quote">Quote</option>
-                </select>
+                <!--                <select id="postType" name="PostType">-->
+                <!--                    <option id = "rec" value="Recipe">Recipe</option>-->
+                <!--                    <option id = "wor" value="Workout">Workout</option>-->
+                <!--                    <option id = "quo" value="Quote">Quote</option>-->
+                <!--                </select>-->
+                <button id="simage">Select Image</button><br><br>
+                Title <input id="namebox1" type="text"/></input>
                 <br>
-                <button id="simage">Select Image</button>
-                <button id="post">Post</button>
+                <!--                <button id="simage">Select Image</button>-->
+                <!--                <button id="post">Post</button>-->
+                <br>
+                <!--                <select id="postType" name="PostType" class = "postTypebar" >-->
+                <!--                    <option disabled selected > Select your post type</option>-->
+                <!--                    <option id = "rec" value="Recipe">Recipe</option>-->
+                <!--                    <option id = "wor" value="Workout">Workout</option>-->
+                <!--                    <option id = "quo" value="Quote">Quote</option>-->
+                <!--                </select>-->
 
+
+                <div class="custom-select-wrapper">
+                    <div class="custom-select">
+                        <div class="custom-select__trigger">
+                            <span>Select</span>
+                            <div class="arrow"></div>
+                        </div>
+                        <div class="custom-options">
+                            <span class="custom-option selected" data-value="recipe">Recipe</span>
+                            <span class="custom-option" data-value="workout">Workout</span>
+                            <span class="custom-option" data-value="quote">Quote</span>
+                        </div>
+                    </div>
+                </div>
 
             </div>
 
             <div id = "quote" hidden = "hidden">
                 <p>THIS THE QUOTE PAGE</p>
+                <label>Type your quote here</label>
+                <span id="quoteBox" class="quotetext" role="textbox" contenteditable content="Type your quote here"></span>
             </div>
 
             <div id = "recipe" hidden = "hidden">
                 <p>THIS THE RECIPE PAGE</p>
+
+                <p>Prep time:<input type="text" id="prepTimetext"> mins</p>
+                <p>Cook time:<input type="text" id="cooktimeText"> mins</p>
+                <p>Serves:<input type="text" id="servingSize"> people</p>
+                <br>
+                <label>Type a bulleted list of ingredients with measurements here</label>
+                <span id="ingredientBox" class="quotetext" role="textbox" contenteditable content="Type a bulleted list of ingredients with measurements here"></span>
+                <br>
+                <label>Type your method of preparation here</label>
+                <span id="methodBox" class="quotetext" role="textbox" contenteditable content="Type your method of preparation here"></span>
             </div>
 
             <div id = "workout" hidden = "hidden">
                 <p>THIS THE WORKOUT PAGE</p>
+                <br>
+                <label>Write a description of the workout. For example the type of workout, what muscles it hits, the split, etc.</label>
+                <span id="workoutDescBox" class="quotetext" role="textbox" contenteditable content="Write a description of the workout. For example the type of workout, what muscles it hits, the split, etc."></span>
+                <br>
+                <label>Type a step by step walkthrough of the workout (sit ups 3x15 could be one exercise)</label>
+                <span id="workoutBox" class="quotetext" role="textbox" contenteditable content="Type a step by step walkthrough of the workout (sit ups 3x15 could be one exercise)"></span>
             </div>
+            <br>
+            <button id="upload">Upload</button>
         </div>
 
     </div>
@@ -122,10 +167,10 @@
 </div>
 <div id = "postpage" class = "postpage" hidden = "hidden">
     <div id = "postonpostpage"></div>
-        <p id = "likescounter" class = "likescounter"></p>
-        <label><input type="checkbox" id = "heart" onclick="heartchecked()">
-            <div class="like-btn-svg" ></div>
-        </label>
+    <p id = "likescounter" class = "likescounter"></p>
+    <label><input type="checkbox" id = "heart" onclick="heartchecked()">
+        <div class="like-btn-svg" ></div>
+    </label>
 
 
 </div>
