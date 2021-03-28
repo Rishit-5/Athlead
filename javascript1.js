@@ -200,10 +200,15 @@ document.getElementById("searchBtn").onclick = function () {
                         var link = CurrentRecord.val().Link;
                         var img = document.createElement('img');
                         postName = link.substring(link.indexOf("%2F")+3, link.indexOf(".png"))
-
+                        postName = postName.replaceAll("%20"," ")
+                        postName = postName.toLowerCase();
+                        postNames.push(postName)
                         img.src = link
                         img.onclick = function () {
-
+                            link = img.src;
+                            postName = link.substring(link.indexOf("%2F")+3, link.indexOf(".png"))
+                            postName = postName.replaceAll("%20"," ")
+                            postName = postName.toLowerCase();
                             hideMainDivs();
                             document.getElementById("postpage").hidden = false;
                             for (let i = 0; i < postsonpostpage.length; i++) {
@@ -216,23 +221,37 @@ document.getElementById("searchBtn").onclick = function () {
 
                             document.getElementById('postonpostpage').appendChild(img2);
                             postsonpostpage.push(img2);
-                            currentref = 'Users/' + names[i] + "/Posts/" + postName;
-                            firebase.database().ref("Users/"+ nameV + "/Activity/"+postName).once('value', function (snapshot) {
-                                if (snapshot.val().Reaction === "Liked"){
-                                    document.getElementById("heart").checked = true;
-                                }
-                            });
-                            firebase.database().ref(currentref + "/Likes").once('value', function (snapshot) {
-                                likes = snapshot.val().Likes
-                                document.getElementById("likescounter").innerText = likes + " Likes"
-                            });
+                            for (let j = 0; j < names.length; j++) {
+                                firebase.database().ref('Users/' + names[j] + "/Posts").once('value', function (allRecords2) {
+                                    allRecords2.forEach(
+                                        function (CurrentRecord2) {
+                                            if (CurrentRecord2.val().Link == img.src){
+                                                currentref = 'Users/' + names[j] + "/Posts/" + postName;
+                                                firebase.database().ref("Users/"+ nameV + "/Activity/"+postName).once('value', function (snapshot) {
+                                                    if (snapshot.val().Reaction === "Liked"){
+                                                        document.getElementById("heart").checked = true;
+                                                    }
+                                                    else{
+                                                        document.getElementById("heart").checked = false;
+
+                                                    }
+                                                });
+                                                firebase.database().ref(currentref).once('value', function (snapshot) {
+                                                    likes = snapshot.val().Likes
+
+                                                    document.getElementById("likescounter").innerText = likes + " Likes"
+                                                });
+                                            }
+                                        }
+                                    )})
+                            }
+
+
 
 
 
                         }
-                        postName = postName.replaceAll("%20"," ")
-                        postName = postName.toLowerCase();
-                        postNames.push(postName)
+
                         document.getElementById('searchPage').appendChild(img);
                         totalPosts.push(img);
                         var type = CurrentRecord.val().Type;
@@ -255,28 +274,46 @@ function updateSearch(){
             var img = document.createElement('img');
             img.src = allPosts[i][0]
             img.onclick = function () {
+                console.log("blaghsghaghs " + img.src)
                 hideMainDivs();
                 document.getElementById("postpage").hidden = false;
                 for (let j = 0; j < postsonpostpage.length; j++) {
                     document.getElementById('postonpostpage').removeChild(postsonpostpage[j])
                 }
-                likes = 0;
-                firebase.database().ref(currentref + "/Activity").once('value', function (allRecords2) {
-                    allRecords2.forEach(
-                        function (CurrentRecord) {
-                            if (CurrentRecord.val().Reaction == "Liked"){
-                                likes++;
-                            }
-                        }
-                    )
-                    document.getElementById("likescounter").innerText = likes + " Likes"
-                })
+
                 postsonpostpage = [];
                 var img2 = document.createElement('img');
 
                 img2.src = allPosts[i][0];
                 img2.className = "postimageonpostpage"
 
+                for (let j = 0; j < names.length; j++) {
+                    firebase.database().ref('Users/' + names[j] + "/Posts").once('value', function (allRecords2) {
+                        allRecords2.forEach(
+                            function (CurrentRecord2) {
+                                if (CurrentRecord2.val().Link == img2.src){
+                                    postName = img2.src.substring(img2.src.indexOf("%2F")+3, img2.src.indexOf(".png"))
+                                    postName = postName.replaceAll("%20"," ")
+                                    postName = postName.toLowerCase();
+                                    currentref = 'Users/' + names[j] + "/Posts/" + postName;
+                                    firebase.database().ref("Users/"+ nameV + "/Activity/"+postName).once('value', function (snapshot) {
+                                        if (snapshot.val().Reaction === "Liked"){
+                                            document.getElementById("heart").checked = true;
+                                        }
+                                        else{
+                                            document.getElementById("heart").checked = false;
+
+                                        }
+                                    });
+                                    firebase.database().ref(currentref).once('value', function (snapshot) {
+                                        likes = snapshot.val().Likes
+
+                                        document.getElementById("likescounter").innerText = likes + " Likes"
+                                    });
+                                }
+                            }
+                        )})
+                }
                 document.getElementById('postonpostpage').appendChild(img2);
                 postsonpostpage.push(img2);
 
@@ -343,27 +380,27 @@ document.getElementById("myprofileBtn").onclick = function () {
 }
 function heartchecked() {
     var checkBox = document.getElementById("heart");
-    firebase.database().ref(currentref + "/Likes").once('value', function (snapshot) {
+    firebase.database().ref(currentref).once('value', function (snapshot) {
         likes = snapshot.val().Likes
         if (checkBox.checked === true){
-            firebase.database().ref("Users/"+nameV+"/Activity/" + postName).set({
+            firebase.database().ref("Users/"+nameV+"/Activity/" + postName).update({
                 Reaction: "Liked",
                 Name: postName
 
             });
             likes++;
-            firebase.database().ref(currentref + "/Likes").set({
+            firebase.database().ref(currentref).update({
                 Likes: likes
 
             });
         } else {
-            firebase.database().ref("Users/"+nameV+"/Activity/" + postName).set({
+            firebase.database().ref("Users/"+nameV+"/Activity/" + postName).update({
                 Reaction: "Unliked",
                 Name: postName
 
             });
             likes--;
-            firebase.database().ref(currentref + "/Likes").set({
+            firebase.database().ref(currentref).update({
                 Likes: likes
 
             });
@@ -511,6 +548,7 @@ document.getElementById("upload").onclick = function(){
 
     if (passesTest) {
         imgName = document.getElementById("namebox1").value;
+        imgName = imgName.toLowerCase();
         var uploadTask = firebase.storage().ref('Image/' + imgName + ".png").put(files[0]);
         uploadTask.on('state_changed', function (snapshot) {
                 var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -622,33 +660,15 @@ window.addEventListener('click', function (e) {
         }
     }
 });
-// document.getElementById("post").onclick = function(){
-//     imgName = document.getElementById("namebox1").value;
-//     imgName = imgName.toLowerCase();
-//     var uploadTask = firebase.storage().ref('Image/'+imgName+".png").put(files[0]);
-//
-//     uploadTask.on('state_changed', function (snapshot){
-//             var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-//             document.getElementById('upProgress').innerHTML = 'Upload' + progress+'%';
-//         },
-//         function(error){
-//             alert('error')
-//         },
-//         function(){
-//             uploadTask.snapshot.ref.getDownloadURL().then(function(url){
-//                     imgUrl = url;
-//
-//                     firebase.database().ref('Users/'+nameV+"/Posts/" + imgName).set({
-//                         Link: imgUrl,
-//                         Type: document.getElementById("postType").value
-//
-//                     });
-//                     alert('image added successfully');
-//                 }
-//             );
-//         });
-//
-// }
+function hideViewOps() {
+    document.getElementById("viewQuoteDiv").hidden = true;
+    document.getElementById("viewRecipe").hidden = true;
+    document.getElementById("viewWorkoutDiv").hidden = true;
+}
+
+function viewPostPage() {
+
+}
 
 function hideViewOps() {
     document.getElementById("viewQuoteDiv").hidden = true;
