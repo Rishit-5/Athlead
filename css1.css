@@ -174,3 +174,52 @@ button:after {
 
 }
 
+.like-btn-svg {
+    width: 80px;
+    height: 100px;
+    background: url(https://abs.twimg.com/a/1446542199/img/t1/web_heart_animation.png) no-repeat 0 0;
+    cursor: pointer;
+    margin-left: 47.5%;
+}
+.likescounter{
+    text-align: center;
+
+}
+
+input[type="checkbox"] {
+    display:none;
+}
+
+input:checked + .like-btn-svg{
+    transition: background 1s steps(28);
+    animation: fave-like-btn-svg 1s steps(28);
+    background-position: -2800px 0;
+}
+
+@keyframes fave-like-btn-svg {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: -2800px 0;
+    }
+}
+.postimageonpostpage{
+    /*display: block;*/
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
+    /*height: auto;*/
+    /*width: auto;*/
+    display: block;
+    max-width:600px;
+    max-height:600px;
+    min-width: 400px;
+    min-height: 400px;
+    width: auto;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+

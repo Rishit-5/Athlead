@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="google-signin-client_id" content="45769101298-n9hb5gt6ocm8ds89o0np52rc2sgej822.apps.googleusercontent.com
-">
+    <meta name="google-signin-client_id" content="45769101298-n9hb5gt6ocm8ds89o0np52rc2sgej822.apps.googleusercontent.com">
 
     <link rel="stylesheet" type="text/css" href="css1.css"/>
 </head>
@@ -23,14 +22,18 @@
         <label>Email</label>
     </div>
     <div class="input-container">
-    <input id="passbox" type="text" required="" value="Athlead1"/>
-    <label>Password</label>
+        <input id="passbox" type="text" required="" value="Athlead1"/>
+        <label>Password</label>
     </div>
     <button id="enterBtn" type="button" class="btn">submit</button><br><br>
     <button id="signup">SIGN UP</button>
+
+    <br>
+
+
 </div>
 
-<div id = "signupScreen" class = "box" hidden = hidden >
+<div id = "signupScreen" class = "box" hidden = hidden>
 
     <span class="text-center">Sign Up</span>
 
@@ -49,6 +52,7 @@
     </div>
     <button id="signupenterBtn" type="button" class="btn">SIGN UP</button><br><br>
     <button id="signupBack">BACK</button>
+
 </div>
 
 
@@ -62,6 +66,7 @@
 
     <div id="searchPage">
         Search <input id="searchbar" type="text" onkeyup="updateSearch()"/></input> <br><br>
+
     </div>
 
     <div id = "homePage">
@@ -80,10 +85,10 @@
         <div id = "postingPage" hidden = hidden >
             <!--        Three buttons for picking the type of post-->
             <div id = "postNavBar">
-<!--                <button id="quoteBtn">QUOTE</button>-->
-<!--                <button id="recipeBtn">RECIPE</button>-->
-<!--                <button id="workoutBtn">WORKOUT</button>-->
-<!--                <button id="postBackBtn">BACK</button>-->
+                <!--                <button id="quoteBtn">QUOTE</button>-->
+                <!--                <button id="recipeBtn">RECIPE</button>-->
+                <!--                <button id="workoutBtn">WORKOUT</button>-->
+                <!--                <button id="postBackBtn">BACK</button>-->
                 <img id = "myimg"> <label id = "upProgress"></label> <br> <br>
                 Name <input id="namebox1" type="text"/></input> <br><br>
 
@@ -113,6 +118,15 @@
         </div>
 
     </div>
+
+</div>
+<div id = "postpage" class = "postpage" hidden = "hidden">
+    <div id = "postonpostpage"></div>
+        <p id = "likescounter" class = "likescounter"></p>
+        <label><input type="checkbox" id = "heart" onclick="heartchecked()">
+            <div class="like-btn-svg" ></div>
+        </label>
+
 
 </div>
 
