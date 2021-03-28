@@ -479,22 +479,19 @@ for (const option of document.querySelectorAll(".custom-option")) {
 
             switch (this.innerHTML) {
                 case "Recipe":
+                    hidePostOps();
                     document.getElementById("recipe").hidden = false;
-                    document.getElementById("workout").hidden = true;
-                    document.getElementById("quote").hidden = true;
 
                     postType = "recipe";
                     break;
                 case "Workout":
-                    document.getElementById("recipe").hidden = true;
+                    hidePostOps();
                     document.getElementById("workout").hidden = false;
-                    document.getElementById("quote").hidden = true;
 
                     postType = "workout";
                     break;
                 case "Quote":
-                    document.getElementById("recipe").hidden = true;
-                    document.getElementById("workout").hidden = true;
+                    hidePostOps();
                     document.getElementById("quote").hidden = false;
 
                     postType = "quote";
