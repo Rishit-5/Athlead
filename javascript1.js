@@ -419,6 +419,7 @@ document.getElementById("upload").onclick = function(){
                                 firebase.database().ref('Users/' + nameV + "/Posts/" + imgName).set({
                                     Link: imgUrl,
                                     Type: postType,
+                                    Likes: 0,
                                     PrepTime: document.getElementById("prepTimetext").innerHTML,
                                     CookTime: document.getElementById("cooktimeText").innerHTML,
                                     ServingSize: document.getElementById("servingSize").innerHTML,
@@ -430,6 +431,7 @@ document.getElementById("upload").onclick = function(){
                                 firebase.database().ref('Users/' + nameV + "/Posts/" + imgName).set({
                                     Link: imgUrl,
                                     Type: postType,
+                                    Likes: 0,
                                     Description: document.getElementById("workoutDescBox").innerHTML,
                                     Workout: document.getElementById("workoutBox").innerHTML,
                                 });
@@ -438,6 +440,7 @@ document.getElementById("upload").onclick = function(){
                                 firebase.database().ref('Users/' + nameV + "/Posts/" + imgName).set({
                                     Link: imgUrl,
                                     Type: postType,
+                                    Likes: 0,
                                     Quote: document.getElementById("quoteBox").innerHTML,
                                 });
                                 break;
