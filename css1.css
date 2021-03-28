@@ -179,8 +179,11 @@ button:after {
     height: 100px;
     background: url(https://abs.twimg.com/a/1446542199/img/t1/web_heart_animation.png) no-repeat 0 0;
     cursor: pointer;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 47.5%;
+}
+.likescounter{
+    text-align: center;
+
 }
 
 input[type="checkbox"] {

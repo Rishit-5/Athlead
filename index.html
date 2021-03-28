@@ -23,8 +23,8 @@
         <label>Email</label>
     </div>
     <div class="input-container">
-    <input id="passbox" type="text" required="" value="Athlead1"/>
-    <label>Password</label>
+        <input id="passbox" type="text" required="" value="Athlead1"/>
+        <label>Password</label>
     </div>
     <button id="enterBtn" type="button" class="btn">submit</button><br><br>
     <button id="signup">SIGN UP</button>
@@ -86,10 +86,10 @@
         <div id = "postingPage" hidden = hidden >
             <!--        Three buttons for picking the type of post-->
             <div id = "postNavBar">
-<!--                <button id="quoteBtn">QUOTE</button>-->
-<!--                <button id="recipeBtn">RECIPE</button>-->
-<!--                <button id="workoutBtn">WORKOUT</button>-->
-<!--                <button id="postBackBtn">BACK</button>-->
+                <!--                <button id="quoteBtn">QUOTE</button>-->
+                <!--                <button id="recipeBtn">RECIPE</button>-->
+                <!--                <button id="workoutBtn">WORKOUT</button>-->
+                <!--                <button id="postBackBtn">BACK</button>-->
                 <img id = "myimg"> <label id = "upProgress"></label> <br> <br>
                 Name <input id="namebox1" type="text"/></input> <br><br>
 
@@ -123,9 +123,12 @@
 </div>
 <div id = "postpage" class = "postpage" hidden = "hidden">
     <div id = "postonpostpage"></div>
-    <label><input type="checkbox" id = "heart" onclick="heartchecked()">
-        <div class="like-btn-svg" ></div>
-    </label>
+        <p id = "likescounter" class = "likescounter"></p>
+        <label><input type="checkbox" id = "heart" onclick="heartchecked()">
+            <div class="like-btn-svg" ></div>
+        </label>
+
+
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/8.2.2/firebase-app.js"></script>

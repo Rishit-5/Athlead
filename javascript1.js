@@ -22,7 +22,9 @@ var allPosts = [];
 var totalPosts = [];
 var postNames = [];
 var postsonpostpage = [];
-
+var currentref = "";
+var postName = "";
+var likes = 0;
 document.getElementById("enterBtn").onclick = function () {
     nameV = document.getElementById("namebox").value;
     emailV = document.getElementById("emailbox").value;
@@ -39,7 +41,6 @@ document.getElementById("enterBtn").onclick = function () {
                         });
 
                         if (passWV === passpass) {
-                            alert("Welcome!");
                             firebase.database().ref("Users/" + nameV + "/Email").on('value', function (snapshot) {
                                 emailV = snapshot.val();
                                 loggedIN = true;
@@ -195,10 +196,7 @@ document.getElementById("searchBtn").onclick = function () {
                     function (CurrentRecord) {
                         var link = CurrentRecord.val().Link;
                         var img = document.createElement('img');
-                        var postName = link.substring(link.indexOf("%2F")+3, link.indexOf(".png"))
-                        postName = postName.replaceAll("%20"," ")
-                        postName = postName.toLowerCase();
-                        postNames.push(postName)
+                        postName = link.substring(link.indexOf("%2F")+3, link.indexOf(".png"))
 
                         img.src = link
                         img.onclick = function () {
@@ -215,10 +213,13 @@ document.getElementById("searchBtn").onclick = function () {
 
                             document.getElementById('postonpostpage').appendChild(img2);
                             postsonpostpage.push(img2);
-
+                            currentref = 'Users/' + names[i] + "/Posts/" + postName;
 
 
                         }
+                        postName = postName.replaceAll("%20"," ")
+                        postName = postName.toLowerCase();
+                        postNames.push(postName)
                         document.getElementById('searchPage').appendChild(img);
                         totalPosts.push(img);
                         var type = CurrentRecord.val().Type;
@@ -242,13 +243,24 @@ function updateSearch(){
             img.src = allPosts[i][0]
             img.onclick = function () {
                 hideMainDivs();
-                var clicked = i;
                 document.getElementById("postpage").hidden = false;
                 for (let j = 0; j < postsonpostpage.length; j++) {
                     document.getElementById('postonpostpage').removeChild(postsonpostpage[j])
                 }
+                likes = 0;
+                firebase.database().ref(currentref + "/Activity").once('value', function (allRecords2) {
+                    allRecords2.forEach(
+                        function (CurrentRecord) {
+                            if (CurrentRecord.val().Reaction == "Liked"){
+                                likes++;
+                            }
+                        }
+                    )
+                    document.getElementById("likescounter").innerText = likes + " Likes"
+                })
                 postsonpostpage = [];
                 var img2 = document.createElement('img');
+
                 img2.src = allPosts[i][0];
                 img2.className = "postimageonpostpage"
 
@@ -318,11 +330,36 @@ document.getElementById("myprofileBtn").onclick = function () {
 }
 function heartchecked() {
     var checkBox = document.getElementById("heart");
-    if (checkBox.checked === true){
+    firebase.database().ref(currentref + "/Likes").once('value', function (snapshot) {
+        likes = snapshot.val().Likes
+        if (checkBox.checked === true){
+            firebase.database().ref("Users/"+nameV+"/Activity/" + postName).set({
+                Reaction: "Liked",
+                Name: postName
 
-    } else {
+            });
+            likes++;
+            firebase.database().ref(currentref + "/Likes").set({
+                Likes: likes
 
-    }
+            });
+        } else {
+            firebase.database().ref("Users/"+nameV+"/Activity/" + postName).set({
+                Reaction: "Unliked",
+                Name: postName
+
+            });
+            likes--;
+            firebase.database().ref(currentref + "/Likes").set({
+                Likes: likes
+
+            });
+        }
+        document.getElementById("likescounter").innerText = likes + " Likes"
+    });//if the user logs out and logs back in, they can increase the amount of total likes
+    //to solve this you can just verify to check whether or not the specific user has already liked the post and set the checkbox to on if they have and off if they havent
+    //also doesnt work if you use the search bar first because currentref isnt set
+
 }
 document.getElementById("pfp").onclick = function() {
     var input = document.createElement('input');
@@ -405,6 +442,7 @@ document.getElementById("simage").onclick = function(){
 
 document.getElementById("post").onclick = function(){
     imgName = document.getElementById("namebox1").value;
+    imgName = imgName.toLowerCase();
     var uploadTask = firebase.storage().ref('Image/'+imgName+".png").put(files[0]);
 
     uploadTask.on('state_changed', function (snapshot){
