@@ -214,6 +214,16 @@ document.getElementById("searchBtn").onclick = function () {
                             document.getElementById('postonpostpage').appendChild(img2);
                             postsonpostpage.push(img2);
                             currentref = 'Users/' + names[i] + "/Posts/" + postName;
+                            firebase.database().ref("Users/"+ nameV + "/Activity/"+postName).once('value', function (snapshot) {
+                                if (snapshot.val().Reaction === "Liked"){
+                                    document.getElementById("heart").checked = true;
+                                }
+                            });
+                            firebase.database().ref(currentref + "/Likes").once('value', function (snapshot) {
+                                likes = snapshot.val().Likes
+                                document.getElementById("likescounter").innerText = likes + " Likes"
+                            });
+
 
 
                         }
@@ -358,7 +368,7 @@ function heartchecked() {
         document.getElementById("likescounter").innerText = likes + " Likes"
     });//if the user logs out and logs back in, they can increase the amount of total likes
     //to solve this you can just verify to check whether or not the specific user has already liked the post and set the checkbox to on if they have and off if they havent
-    //also doesnt work if you use the search bar first because currentref isnt set
+    //also doesnt work if you use the search bar first because currentref isnt set1
 
 }
 document.getElementById("pfp").onclick = function() {
