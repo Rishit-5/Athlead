@@ -21,7 +21,12 @@ var loggedIN = false;
 var allPosts = [];
 var totalPosts = [];
 var postNames = [];
+var postsonpostpage = [];
+var currentref = "";
+var postName = "";
+var likes = 0;
 var postType = "";
+
 
 document.getElementById("enterBtn").onclick = function () {
     nameV = document.getElementById("namebox").value;
@@ -39,7 +44,6 @@ document.getElementById("enterBtn").onclick = function () {
                         });
 
                         if (passWV === passpass) {
-                            alert("Welcome!");
                             firebase.database().ref("Users/" + nameV + "/Email").on('value', function (snapshot) {
                                 emailV = snapshot.val();
                                 loggedIN = true;
@@ -195,12 +199,40 @@ document.getElementById("searchBtn").onclick = function () {
                     function (CurrentRecord) {
                         var link = CurrentRecord.val().Link;
                         var img = document.createElement('img');
-                        var postName = link.substring(link.indexOf("%2F")+3, link.indexOf(".png"))
+                        postName = link.substring(link.indexOf("%2F")+3, link.indexOf(".png"))
+
+                        img.src = link
+                        img.onclick = function () {
+
+                            hideMainDivs();
+                            document.getElementById("postpage").hidden = false;
+                            for (let i = 0; i < postsonpostpage.length; i++) {
+                                document.getElementById('postonpostpage').removeChild(postsonpostpage[i])
+                            }
+                            postsonpostpage = [];
+                            var img2 = document.createElement('img');
+                            img2.src = img.src
+                            img2.className = "postimageonpostpage"
+
+                            document.getElementById('postonpostpage').appendChild(img2);
+                            postsonpostpage.push(img2);
+                            currentref = 'Users/' + names[i] + "/Posts/" + postName;
+                            firebase.database().ref("Users/"+ nameV + "/Activity/"+postName).once('value', function (snapshot) {
+                                if (snapshot.val().Reaction === "Liked"){
+                                    document.getElementById("heart").checked = true;
+                                }
+                            });
+                            firebase.database().ref(currentref + "/Likes").once('value', function (snapshot) {
+                                likes = snapshot.val().Likes
+                                document.getElementById("likescounter").innerText = likes + " Likes"
+                            });
+
+
+
+                        }
                         postName = postName.replaceAll("%20"," ")
                         postName = postName.toLowerCase();
                         postNames.push(postName)
-
-                        img.src = link
                         document.getElementById('searchPage').appendChild(img);
                         totalPosts.push(img);
                         var type = CurrentRecord.val().Type;
@@ -222,6 +254,35 @@ function updateSearch(){
         if (postNames[i].includes(searchText.toLowerCase())){
             var img = document.createElement('img');
             img.src = allPosts[i][0]
+            img.onclick = function () {
+                hideMainDivs();
+                document.getElementById("postpage").hidden = false;
+                for (let j = 0; j < postsonpostpage.length; j++) {
+                    document.getElementById('postonpostpage').removeChild(postsonpostpage[j])
+                }
+                likes = 0;
+                firebase.database().ref(currentref + "/Activity").once('value', function (allRecords2) {
+                    allRecords2.forEach(
+                        function (CurrentRecord) {
+                            if (CurrentRecord.val().Reaction == "Liked"){
+                                likes++;
+                            }
+                        }
+                    )
+                    document.getElementById("likescounter").innerText = likes + " Likes"
+                })
+                postsonpostpage = [];
+                var img2 = document.createElement('img');
+
+                img2.src = allPosts[i][0];
+                img2.className = "postimageonpostpage"
+
+                document.getElementById('postonpostpage').appendChild(img2);
+                postsonpostpage.push(img2);
+
+
+
+            }
             document.getElementById('searchPage').appendChild(img);
             totalPosts.push(img);
         }
@@ -257,6 +318,19 @@ document.getElementById("myprofileBtn").onclick = function () {
                 img.src = snapshot.val();
                 img.onclick = function () {
                     hideMainDivs();
+                    document.getElementById("postpage").hidden = false;
+                    for (let i = 0; i < postsonpostpage.length; i++) {
+                        document.getElementById('postonpostpage').removeChild(postsonpostpage[i])
+                    }
+                    postsonpostpage = [];
+                    var img2 = document.createElement('img');
+                    img2.src = img.src
+                    img2.className = "postimageonpostpage"
+
+                    document.getElementById('postonpostpage').appendChild(img2);
+                    postsonpostpage.push(img2);
+
+
 
                 }
                 document.getElementById('myprofile').appendChild(img);
@@ -265,6 +339,39 @@ document.getElementById("myprofileBtn").onclick = function () {
         });
     });
 
+
+}
+function heartchecked() {
+    var checkBox = document.getElementById("heart");
+    firebase.database().ref(currentref + "/Likes").once('value', function (snapshot) {
+        likes = snapshot.val().Likes
+        if (checkBox.checked === true){
+            firebase.database().ref("Users/"+nameV+"/Activity/" + postName).set({
+                Reaction: "Liked",
+                Name: postName
+
+            });
+            likes++;
+            firebase.database().ref(currentref + "/Likes").set({
+                Likes: likes
+
+            });
+        } else {
+            firebase.database().ref("Users/"+nameV+"/Activity/" + postName).set({
+                Reaction: "Unliked",
+                Name: postName
+
+            });
+            likes--;
+            firebase.database().ref(currentref + "/Likes").set({
+                Likes: likes
+
+            });
+        }
+        document.getElementById("likescounter").innerText = likes + " Likes"
+    });//if the user logs out and logs back in, they can increase the amount of total likes
+    //to solve this you can just verify to check whether or not the specific user has already liked the post and set the checkbox to on if they have and off if they havent
+    //also doesnt work if you use the search bar first because currentref isnt set1
 
 }
 document.getElementById("pfp").onclick = function() {
@@ -280,7 +387,7 @@ document.getElementById("pfp").onclick = function() {
 
             uploadTask.on('state_changed', function (snapshot){
                     var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    document.getElementById('upProgress').value = 'Upload' + progress+'%';
+                    document.getElementById('upProgress').innerHTML = 'Upload' + progress+'%';
                 },
                 function(error){
                     alert('error')
@@ -305,6 +412,7 @@ document.getElementById("pfp").onclick = function() {
 
 
 }
+
 document.getElementById("postBtn").onclick = function () {
     document.getElementById("myprofile").hidden = true;
     document.getElementById("postingPage").hidden = false;
@@ -323,6 +431,8 @@ function hideMainDivs() {
     document.getElementById("searchPage").hidden = true;
     document.getElementById("homePage").hidden = true;
     document.getElementById("myprofilePage").hidden = true;
+    document.getElementById("postpage").hidden = true;
+
 }
 
 
@@ -340,7 +450,6 @@ document.getElementById("simage").onclick = function(){
     input.click();
 
 }
-
 document.getElementById("upload").onclick = function(){
     // alert(files[0]);
     var passesTest = true;
@@ -408,7 +517,7 @@ document.getElementById("upload").onclick = function(){
                 document.getElementById('upProgress').innerHTML = 'Upload' + progress + '%';
             },
             function (error) {
-            alert(error)
+                alert(error)
                 alert('error')
             },
             function () {
@@ -460,8 +569,6 @@ document.getElementById("upload").onclick = function(){
     }
 
 }
-
-
 for (const dropdown of document.querySelectorAll(".custom-select-wrapper")) {
     dropdown.addEventListener('click', function () {
         this.querySelector('.custom-select').classList.toggle('open');
@@ -479,19 +586,19 @@ for (const option of document.querySelectorAll(".custom-option")) {
 
             switch (this.innerHTML) {
                 case "Recipe":
-                    hidePostOps();
+                    hidePostOps()
                     document.getElementById("recipe").hidden = false;
-
                     postType = "recipe";
                     break;
                 case "Workout":
-                    hidePostOps();
+                    hidePostOps()
                     document.getElementById("workout").hidden = false;
+
 
                     postType = "workout";
                     break;
                 case "Quote":
-                    hidePostOps();
+                    hidePostOps()
                     document.getElementById("quote").hidden = false;
 
                     postType = "quote";
@@ -509,3 +616,33 @@ window.addEventListener('click', function (e) {
         }
     }
 });
+// document.getElementById("post").onclick = function(){
+//     imgName = document.getElementById("namebox1").value;
+//     imgName = imgName.toLowerCase();
+//     var uploadTask = firebase.storage().ref('Image/'+imgName+".png").put(files[0]);
+//
+//     uploadTask.on('state_changed', function (snapshot){
+//             var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//             document.getElementById('upProgress').innerHTML = 'Upload' + progress+'%';
+//         },
+//         function(error){
+//             alert('error')
+//         },
+//         function(){
+//             uploadTask.snapshot.ref.getDownloadURL().then(function(url){
+//                     imgUrl = url;
+//
+//                     firebase.database().ref('Users/'+nameV+"/Posts/" + imgName).set({
+//                         Link: imgUrl,
+//                         Type: document.getElementById("postType").value
+//
+//                     });
+//                     alert('image added successfully');
+//                 }
+//             );
+//         });
+//
+// }
+
+
+
