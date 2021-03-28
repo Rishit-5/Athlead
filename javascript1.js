@@ -650,5 +650,12 @@ window.addEventListener('click', function (e) {
 //
 // }
 
+function hideViewOps() {
+    document.getElementById("viewQuoteDiv").hidden = true;
+    document.getElementById("viewRecipe").hidden = true;
+    document.getElementById("viewWorkoutDiv").hidden = true;
+}
 
+function viewPostPage() {
 
+}
