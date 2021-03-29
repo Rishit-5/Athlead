@@ -271,10 +271,10 @@ function updateSearch(){
     totalPosts = [];
     var searchText = document.getElementById("searchbar").value;
     for (let i = 0; i < postNames.length; i++) {
-        if (postNames[i].includes(searchText.toLowerCase())){
+        if (postNames[i].includes(searchText.toLowerCase())) {
             var img = document.createElement('img');
             img.src = allPosts[i][0]
-
+            img.onclick = function () {
                 console.log("blaghsghaghs " + img.src)
                 hideMainDivs();
                 document.getElementById("postpage").hidden = false;
@@ -292,17 +292,16 @@ function updateSearch(){
                     firebase.database().ref('Users/' + names[j] + "/Posts").once('value', function (allRecords2) {
                         allRecords2.forEach(
                             function (CurrentRecord2) {
-                                if (CurrentRecord2.val().Link == img2.src){
-                                    postName = img2.src.substring(img2.src.indexOf("%2F")+3, img2.src.indexOf(".png"))
-                                    postName = postName.replaceAll("%20"," ")
+                                if (CurrentRecord2.val().Link == img2.src) {
+                                    postName = img2.src.substring(img2.src.indexOf("%2F") + 3, img2.src.indexOf(".png"))
+                                    postName = postName.replaceAll("%20", " ")
                                     postName = postName.toLowerCase();
                                     currentref = 'Users/' + names[j] + "/Posts/" + postName;
                                     viewPostPage(currentref, postName);
-                                    firebase.database().ref("Users/"+ nameV + "/Activity/"+postName).once('value', function (snapshot) {
-                                        if (snapshot.val().Reaction === "Liked"){
+                                    firebase.database().ref("Users/" + nameV + "/Activity/" + postName).once('value', function (snapshot) {
+                                        if (snapshot.val().Reaction === "Liked") {
                                             document.getElementById("heart").checked = true;
-                                        }
-                                        else{
+                                        } else {
                                             document.getElementById("heart").checked = false;
 
                                         }
@@ -314,17 +313,18 @@ function updateSearch(){
                                     });
                                 }
                             }
-                        )})
+                        )
+                    })
                 }
                 document.getElementById('postonpostpage').appendChild(img2);
                 postsonpostpage.push(img2);
-
 
 
             }
             document.getElementById('searchPage').appendChild(img);
             totalPosts.push(img);
         }
+    }
     // alert(document.getElementById("searchbar").value)
 }
 
@@ -361,6 +361,7 @@ document.getElementById("myprofileBtn").onclick = function () {
                     viewPostPage(str, postName)
                     hideMainDivs();
                     document.getElementById("postpage").hidden = false;
+                    document.getElementById("heart2").hidden = true;
                     for (let i = 0; i < postsonpostpage.length; i++) {
                         document.getElementById('postonpostpage').removeChild(postsonpostpage[i])
                     }
@@ -673,7 +674,7 @@ function hideViewOps() {
 
 function viewPostPage(postPath, titleName) {
     document.getElementById("viewTitle").innerHTML = titleName;
-
+    document.getElementById("heart2").hidden = false;
     firebase.database().ref(postPath).on('value', function (snapshot) {
         document.getElementById("postType").innerHTML = snapshot.val().Type;
         hideViewOps()
