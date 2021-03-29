@@ -348,13 +348,17 @@ document.getElementById("myprofileBtn").onclick = function () {
     yourPosts = [];
     firebase.database().ref("Users/"+nameV+"/Posts").once('value', function (snapshot) {
         snapshot.forEach(function (child) {
-            var str = "Users/"+nameV+"/Posts/"+child.key + "/Link";
+            var str = "Users/"+nameV+"/Posts/"+child.key;
 
-            firebase.database().ref(str).on('value', function (snapshot) {
+            firebase.database().ref("Users/"+nameV+"/Posts/"+child.key + "/Link").on('value', function (snapshot) {
                 var img = document.createElement('img');
 
                 img.src = snapshot.val();
                 img.onclick = function () {
+                    postName = img.src.substring(img.src.indexOf("%2F")+3, img.src.indexOf(".png"))
+                    postName = postName.replaceAll("%20"," ")
+                    postName = postName.toUpperCase();
+                    viewPostPage(str, postName)
                     hideMainDivs();
                     document.getElementById("postpage").hidden = false;
                     for (let i = 0; i < postsonpostpage.length; i++) {
@@ -407,9 +411,7 @@ function heartchecked() {
             });
         }
         document.getElementById("likescounter").innerText = likes + " Likes"
-    });//if the user logs out and logs back in, they can increase the amount of total likes
-    //to solve this you can just verify to check whether or not the specific user has already liked the post and set the checkbox to on if they have and off if they havent
-    //also doesnt work if you use the search bar first because currentref isnt set1
+    });
 
 }
 document.getElementById("pfp").onclick = function() {
