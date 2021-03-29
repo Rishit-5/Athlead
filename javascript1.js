@@ -684,7 +684,7 @@ function viewPostPage(postPath, titleName) {
 
                 document.getElementById("viewPrep").innerHTML = "Prep Time: " + snapshot.val().PrepTime + "mins";
                 document.getElementById("viewCook").innerHTML = "Cook Time: " + snapshot.val().CookTime + "mins";
-                document.getElementById("viewServingSize").innerHTML = "Serves: " + snapshot.val().ServingSize + "people";
+                document.getElementById("viewServingSize").innerHTML = "Serves: " + snapshot.val().ServingSize + " people";
                 document.getElementById("viewIngredients").innerHTML = "Ingredients: " + snapshot.val().Ingredients;
                 document.getElementById("viewMethod").innerHTML = "Method: " + snapshot.val().Method;
                 break;
