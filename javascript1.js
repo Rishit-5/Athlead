@@ -343,7 +343,7 @@ document.getElementById("myprofileBtn").onclick = function () {
 
 
     for (let i = 0; i < yourPosts.length; i++) {
-        document.getElementById('myprofilePage').removeChild(yourPosts[i])
+        document.getElementById('myprofile').removeChild(yourPosts[i])
     }
     yourPosts = [];
     firebase.database().ref("Users/"+nameV+"/Posts").once('value', function (snapshot) {
