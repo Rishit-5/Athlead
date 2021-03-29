@@ -397,3 +397,8 @@ input:checked + .like-btn-svg{
     color: gray;
 }
 
+.viewText {
+    text-align: center;
+    alignment: center;
+    font-size: 25px;
+}

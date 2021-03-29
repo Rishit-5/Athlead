@@ -227,6 +227,7 @@ document.getElementById("searchBtn").onclick = function () {
                                         function (CurrentRecord2) {
                                             if (CurrentRecord2.val().Link == img.src){
                                                 currentref = 'Users/' + names[j] + "/Posts/" + postName;
+                                                viewPostPage(currentref, postName);
                                                 firebase.database().ref("Users/"+ nameV + "/Activity/"+postName).once('value', function (snapshot) {
                                                     if (snapshot.val().Reaction === "Liked"){
                                                         document.getElementById("heart").checked = true;
@@ -273,7 +274,7 @@ function updateSearch(){
         if (postNames[i].includes(searchText.toLowerCase())){
             var img = document.createElement('img');
             img.src = allPosts[i][0]
-            img.onclick = function () {
+
                 console.log("blaghsghaghs " + img.src)
                 hideMainDivs();
                 document.getElementById("postpage").hidden = false;
@@ -296,6 +297,7 @@ function updateSearch(){
                                     postName = postName.replaceAll("%20"," ")
                                     postName = postName.toLowerCase();
                                     currentref = 'Users/' + names[j] + "/Posts/" + postName;
+                                    viewPostPage(currentref, postName);
                                     firebase.database().ref("Users/"+ nameV + "/Activity/"+postName).once('value', function (snapshot) {
                                         if (snapshot.val().Reaction === "Liked"){
                                             document.getElementById("heart").checked = true;
@@ -323,7 +325,6 @@ function updateSearch(){
             document.getElementById('searchPage').appendChild(img);
             totalPosts.push(img);
         }
-    }
     // alert(document.getElementById("searchbar").value)
 }
 
@@ -660,15 +661,7 @@ window.addEventListener('click', function (e) {
         }
     }
 });
-function hideViewOps() {
-    document.getElementById("viewQuoteDiv").hidden = true;
-    document.getElementById("viewRecipe").hidden = true;
-    document.getElementById("viewWorkoutDiv").hidden = true;
-}
 
-function viewPostPage() {
-
-}
 
 function hideViewOps() {
     document.getElementById("viewQuoteDiv").hidden = true;
@@ -676,6 +669,34 @@ function hideViewOps() {
     document.getElementById("viewWorkoutDiv").hidden = true;
 }
 
-function viewPostPage() {
+function viewPostPage(postPath, titleName) {
+    document.getElementById("viewTitle").innerHTML = titleName;
 
+    firebase.database().ref(postPath).on('value', function (snapshot) {
+        document.getElementById("postType").innerHTML = snapshot.val().Type;
+        hideViewOps()
+        switch (snapshot.val().Type.toString()) {
+            case "recipe":
+                document.getElementById("viewRecipe").hidden = false;
+
+                document.getElementById("viewPrep").innerHTML = "Prep Time: " + snapshot.val().PrepTime + "mins";
+                document.getElementById("viewCook").innerHTML = "Cook Time: " + snapshot.val().CookTime + "mins";
+                document.getElementById("viewServingSize").innerHTML = "Serves: " + snapshot.val().ServingSize + "people";
+                document.getElementById("viewIngredients").innerHTML = "Ingredients: " + snapshot.val().Ingredients;
+                document.getElementById("viewMethod").innerHTML = "Method: " + snapshot.val().Method;
+                break;
+            case "workout":
+                document.getElementById("viewWorkoutDiv").hidden = false;
+
+                document.getElementById("viewWorkoutDesc").innerHTML = "Description: " + snapshot.val().Description;
+                document.getElementById("viewWorkout").innerHTML = "Workout: " + snapshot.val().Workout;
+                break;
+            case "quote":
+                document.getElementById("viewQuoteDiv").hidden = false;
+
+                document.getElementById("viewQuote").innerHTML = "Quote: " + snapshot.val().Quote;
+                break;
+        }
+    });
 }
+
