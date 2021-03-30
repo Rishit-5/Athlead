@@ -65,7 +65,11 @@
     </div>
 
     <div id="searchPage">
-        Search <input id="searchbar" type="text" onkeyup="updateSearch()"/></input> <br><br>
+        <br> <br>
+        <div class="input-container2">
+            <input id="searchbar" type="text" onkeyup="updateSearch()"/></input>
+            <label>Search</label>
+        </div>
 
     </div>
 
@@ -168,8 +172,9 @@
 <div id = "postpage" class = "postpage" hidden = "hidden">
     <p id="viewTitle" class="viewText"></p>
     <p id="postType" class="viewText"></p>
+    <p id="username" class="viewText"></p>
     <div id = "postonpostpage"></div>
-    <p id = "likescounter" class = "likescounter"></p>
+    <p id = "likescounter" class = "viewText"></p>
     <label><input type="checkbox" id = "heart" onclick="heartchecked()">
         <div id = "heart2" class="like-btn-svg" ></div>
     </label>
@@ -192,6 +197,8 @@
         <p id="viewMethod" class="viewText"></p>
         <br>
         <br>
+
+
     </div>
 
     <div id = "viewWorkoutDiv" hidden = "hidden">
@@ -201,7 +208,13 @@
         <br>
         <br>
     </div>
-
+    <span id="commentbox" class="commentbox" role="textbox" contenteditable content="Type a bulleted list of ingredients with measurements here"></span>
+    <button class = "commentpost" onclick = "commentButton()">Post Comment</button>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
 
 </div>
 
