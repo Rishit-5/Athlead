@@ -29,11 +29,26 @@ var postType = "";
 var allComments = [];
 
 
+
 document.getElementById("enterBtn").onclick = function () {
     nameV = document.getElementById("namebox").value;
     emailV = document.getElementById("emailbox").value;
     passWV = document.getElementById("passbox").value;
 
+    // fetch("https://twinword-text-similarity-v1.p.rapidapi.com/similarity/?text1=dog&text2=cat", {
+    //     "method": "GET",
+    //     "headers": {
+    //         "x-rapidapi-key": "6c0ac42843msh4bec17db4b0e9adp128a17jsnfefa5fdddb20",
+    //         "x-rapidapi-host": "twinword-text-similarity-v1.p.rapidapi.com"
+    //     }
+    // })
+    //     .then(response => response.json()) // Getting the actual response data
+    //     .then(response => {
+    //         alert(response.similarity);
+    //     })
+    //     .catch(err => {
+    //         console.error(err);
+    //     });
     if (!(nameV == "") && !(emailV == "") && !(passWV == "")) {
 
             firebase.database().ref("Users/" + nameV).on('value', function (snapshot) {
