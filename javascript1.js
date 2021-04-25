@@ -27,7 +27,9 @@ var postName = "";
 var likes = 0;
 var postType = "";
 var allComments = [];
-
+var likedPosts = [];
+var similarityScores = [];
+var homePosts = [];
 
 
 document.getElementById("enterBtn").onclick = function () {
@@ -35,67 +37,70 @@ document.getElementById("enterBtn").onclick = function () {
     emailV = document.getElementById("emailbox").value;
     passWV = document.getElementById("passbox").value;
 
-    // fetch("https://twinword-text-similarity-v1.p.rapidapi.com/similarity/?text1=dog&text2=cat", {
-    //     "method": "GET",
-    //     "headers": {
-    //         "x-rapidapi-key": "6c0ac42843msh4bec17db4b0e9adp128a17jsnfefa5fdddb20",
-    //         "x-rapidapi-host": "twinword-text-similarity-v1.p.rapidapi.com"
-    //     }
-    // })
-    //     .then(response => response.json()) // Getting the actual response data
-    //     .then(response => {
-    //         alert(response.similarity);
-    //     })
-    //     .catch(err => {
-    //         console.error(err);
-    //     });
     if (!(nameV == "") && !(emailV == "") && !(passWV == "")) {
 
-            firebase.database().ref("Users/" + nameV).on('value', function (snapshot) {
-                if (!loggedIN) {
-                    if (snapshot.exists()) {
-                        var passpass;
-                        firebase.database().ref("Users/" + nameV + "/Password").on('value', function (snapshot) {
-                            passpass = snapshot.val();
+        firebase.database().ref("Users/" + nameV).on('value', function (snapshot) {
+            if (!loggedIN) {
+                if (snapshot.exists()) {
+                    var passpass;
+                    firebase.database().ref("Users/" + nameV + "/Password").on('value', function (snapshot) {
+                        passpass = snapshot.val();
+                    });
+
+                    if (passWV === passpass) {
+                        firebase.database().ref("Users/" + nameV + "/Email").on('value', function (snapshot) {
+                            emailV = snapshot.val();
+                            loggedIN = true;
+                            firebase.database().ref('Users').once('value', function (allRecords) {
+                                allRecords.forEach(
+                                    function (CurrentRecord) {
+                                        var name = CurrentRecord.val().Name;
+                                        names.push(name);
+                                    }
+                                )
+                                postNames = [];
+                                for (let i = 0; i < names.length; i++) {
+                                    if (names[i] === nameV) {
+
+                                    }
+                                    else {
+                                        firebase.database().ref('Users/' + names[i] + "/Posts").once('value', function (allRecords) {
+                                            allRecords.forEach(
+                                                function (CurrentRecord) {
+                                                    var key = CurrentRecord.key
+                                                    postNames.push(key)
+                                                }
+                                            )
+                                        })
+
+                                    }
+                                }
+                            });
                         });
 
-                        if (passWV === passpass) {
-                            firebase.database().ref("Users/" + nameV + "/Email").on('value', function (snapshot) {
-                                emailV = snapshot.val();
-                                loggedIN = true;
-                                firebase.database().ref('Users').once('value', function (allRecords) {
-                                    allRecords.forEach(
-                                        function (CurrentRecord) {
-                                            var name = CurrentRecord.val().Name;
-                                            names.push(name);
-                                        }
-                                    )
-                                });
-                            });
-
-                            document.getElementById("signinScreen").hidden = true;
-                            document.getElementById("app").hidden = false;
-                            hideMainDivs();
-                            document.getElementById("homePage").hidden = true;
-                        } else {
-                            alert("incorrect")
-                        }
+                        document.getElementById("signinScreen").hidden = true;
+                        document.getElementById("app").hidden = false;
+                        hideMainDivs();
+                        document.getElementById("homePage").hidden = true;
                     } else {
-                        alert("We can't seem to find your account, would you like to sign up?")
-                        // firebase.database().ref("Users/" + nameV).set({
-                        //     Name: nameV,
-                        //     Email: emailV,
-                        //     Password: passWV,
-                        //     Followers: 0,
-                        //
-                        // });
-                        // document.getElementById("signinScreen").hidden = true;
-                        // document.getElementById("app").hidden = false;
-                        // hideMainDivs();
-                        // document.getElementById("homePage").hidden = true;
+                        alert("incorrect")
                     }
+                } else {
+                    alert("We can't seem to find your account, would you like to sign up?")
+                    // firebase.database().ref("Users/" + nameV).set({
+                    //     Name: nameV,
+                    //     Email: emailV,
+                    //     Password: passWV,
+                    //     Followers: 0,
+                    //
+                    // });
+                    // document.getElementById("signinScreen").hidden = true;
+                    // document.getElementById("app").hidden = false;
+                    // hideMainDivs();
+                    // document.getElementById("homePage").hidden = true;
                 }
-            });
+            }
+        });
 
     } else {
         alert("Your password, email, or name field is empty");
@@ -191,12 +196,122 @@ document.getElementById("signupenterBtn").onclick = function() {
 
 document.getElementById("homeBtn").onclick = function () {
     hideMainDivs();
+    similarityScores = [];
+    postNames = [];
+    var liked = []
+    var links = [];
     document.getElementById("homePage").hidden = false;
+    firebase.database().ref('Users/' + nameV + "/Activity").once('value', function (allRecords) {
+        allRecords.forEach(
+            function (CurrentRecord) {
+                liked.push(CurrentRecord.key)
+                firebase.database().ref('Users/' + nameV + "/Activity/" + CurrentRecord.key).once('value', function (allRecords2) {
+                    let insideSim = []
+                    allRecords2.forEach(
+                        function (CurrentRecord2) {
+                            if (CurrentRecord2.val().Similarity !== undefined) {
+                                insideSim.push(CurrentRecord2.val().Similarity)
+                                postNames.push(CurrentRecord2.key)
+                                links.push(CurrentRecord2.val().Link)
+                            }
+                        }
+                    )
+                    similarityScores.push(insideSim)
+                })
+            }
+        )
+        var sumArray = [];
+        for (let i = 0; i < similarityScores[0].length; i++) {
+            sumArray.push(0)
+        }
+        for (let i = 0; i < similarityScores.length; i++) {
+            for (let j = 0; j < similarityScores[0].length; j++) {
+                sumArray[j] = (parseFloat(sumArray[j]) + Math.pow(parseFloat(similarityScores[i][j])*10,2))
+            }
+        }
+
+        var reducedArray = removeDuplicates(postNames)
+        var nameSim = [];
+        for (let i = 0; i < reducedArray.length; i++) {
+            var tempArray = [];
+            tempArray.push(reducedArray[i])
+            tempArray.push(sumArray[i])
+            tempArray.push(links[i])
+            nameSim.push(tempArray)
+        }
+        for (let i = 0; i < nameSim.length; i++) {
+            for (let j = 0; j < liked.length; j++) {
+                if (liked[j] === nameSim[i][0]){
+                    nameSim.splice(i,1)
+                    i = 0;
+                }
+            }
+        }
+
+        var done = false;
+        while (!done) {
+            done = true;
+            for (var i = 1; i < nameSim.length; i += 1) {
+                if (nameSim[i - 1][1] < nameSim[i][1]) {
+                    done = false;
+                    var tmp = nameSim[i - 1];
+                    nameSim[i - 1] = nameSim[i];
+                    nameSim[i] = tmp;
+                }
+            }
+        }
+        console.log(nameSim)//nameSim is a 2D array with both the name of the posts and its similarity score, but the ones with a similarity score of 1 are removed so it's just other posts
+        //The array is also sorted based on the similarity scores from highest to lowest
+        for (let i = 0; i < homePosts.length; i++) {
+            homePosts[i].remove();
+        }
+        homePosts = [];
+        for (let i = 0; i < nameSim.length; i++) {
+            var img2 = document.createElement('img');
+            img2.src = nameSim[i][2]
+            homePosts.push(img2)
+            document.getElementById('homePage').appendChild(img2);
+        }
+        //TODO: Update similarity score when a user makes a post
+    })
+
+
+
+
+}
+function removeDuplicates(array) {
+    return array.filter((a, b) => array.indexOf(a) === b)
 }
 let names = [];
+function sleep(duration) {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve()
+        }, duration)
+    })
+}
+function generatePosts(){
 
+    postNames = [];
+    for (let i = 0; i < names.length; i++) {
+        if (names[i] === nameV) {
+
+        }
+        else {
+            firebase.database().ref('Users/' + names[i] + "/Posts").once('value', function (allRecords) {
+                allRecords.forEach(
+                    function (CurrentRecord) {
+                        var key = CurrentRecord.key
+                        postNames.push(key)
+                    }
+                )
+            })
+        }
+    }
+}
 document.getElementById("searchBtn").onclick = function () {
     hideMainDivs();
+    setTimeout(() => { console.log("World!"); }, 2000);
     document.getElementById("searchbar").value = ""
     document.getElementById("searchPage").hidden = false;
     // names = getNames(names)
@@ -246,7 +361,7 @@ document.getElementById("searchBtn").onclick = function () {
                                                 currentref = 'Users/' + names[j] + "/Posts/" + postName;
                                                 viewPostPage(currentref, postName, names[j]);
                                                 firebase.database().ref("Users/"+ nameV + "/Activity/"+postName).once('value', function (snapshot) {
-                                                    if (snapshot.val().Reaction === "Liked"){
+                                                    if (snapshot.val()!==null){
                                                         document.getElementById("heart").checked = true;
                                                     }
                                                     else{
@@ -448,6 +563,29 @@ document.getElementById("myprofileBtn").onclick = function () {
                     document.getElementById('postonpostpage').appendChild(img2);
                     postsonpostpage.push(img2);
 
+                    // firebase.database().ref("Users/"+nameV+"/Activity").once('value', function (snapshot) {
+                    //     snapshot.forEach(function (child) {
+                    //             firebase.database().ref('Users/' + nameV + "/Activity/" + child.key + "/" + postName).set({
+                    //                 Test: "gsbdbgx",
+                    //
+                    //             });
+                    //     })
+                    // })
+                    for (let r = 0; r < names.length; r++) {
+                        if (names[r] === nameV) {
+
+                        }
+                        else {
+                            firebase.database().ref('Users/' + names[r] + "/Activity").once('value', function (allRecords) {//goes through all Posts in the database using a foreach
+                                allRecords.forEach(
+                                    function (CurrentRecord) {
+
+                                    }
+
+                                )//pushes the names of the Posts into an array allPosts, which will be used later to generate similarity scores
+                            })
+                        }
+                    }
 
 
                 }
@@ -467,19 +605,81 @@ function heartchecked() {
             firebase.database().ref("Users/"+nameV+"/Activity/" + postName).update({
                 Reaction: "Liked",
                 Name: postName
-
             });
             likes++;
             firebase.database().ref(currentref).update({
                 Likes: likes
-
             });
+            likedPosts = [];
+            firebase.database().ref('Users/' + nameV + "/Activity").once('value', function (allRecords) {
+                allRecords.forEach(
+                    function (CurrentRecord) {
+                        var reaction = CurrentRecord.val().Reaction;
+                        if (reaction === "Liked"){
+                            likedPosts.push(CurrentRecord.val().Name)
+                        }
+                    }
+
+                )
+                allPosts = []
+                allLinks = []
+                for (let r = 0; r < names.length; r++) {
+                    if (names[r] === nameV) {
+
+                    }
+                    else {
+                        firebase.database().ref('Users/' + names[r] + "/Posts").once('value', function (allRecords) {//goes through all Posts in the database using a foreach
+                            allRecords.forEach(
+                                function (CurrentRecord) {
+                                    var name = CurrentRecord.key;
+                                    var link = CurrentRecord.val().Link
+                                    allPosts.push(name)
+                                    allLinks.push(link)
+                                }
+
+                            )//pushes the names of the Posts into an array allPosts, which will be used later to generate similarity scores
+
+                            if (r==names.length-1) {//last instance instance of the names loop(the one that's used to gather all the posts)
+
+                                for (let i = 0; i < allPosts.length; i++) {
+                                    const data = null;
+
+                                    const xhr = new XMLHttpRequest();
+                                    xhr.withCredentials = true;
+
+                                    xhr.addEventListener("readystatechange", function () {
+                                        if (this.readyState === this.DONE) {
+
+                                            let str = this.responseText
+                                            str = str.substring(str.indexOf("similarity:")+15, str.indexOf("value")-2)
+                                            firebase.database().ref("Users/"+nameV+"/Activity/" + postName + "/" + allPosts[i]).set({
+                                                Name: allPosts[i],
+                                                Similarity: str,
+                                                Link: allLinks[i]
+                                            });
+
+                                            // str.substring(str.indexOf("similarity: "), )
+
+                                        }
+                                    });
+
+                                    xhr.open("GET", "https://twinword-text-similarity-v1.p.rapidapi.com/similarity/?text1=" + allPosts[i] + "&text2=" + postName);
+                                    xhr.setRequestHeader("x-rapidapi-key", "6c0ac42843msh4bec17db4b0e9adp128a17jsnfefa5fdddb20");
+                                    xhr.setRequestHeader("x-rapidapi-host", "twinword-text-similarity-v1.p.rapidapi.com");
+
+                                    xhr.send(data);
+
+
+
+
+                                }
+                            }
+                        })
+                    }
+                }
+            })
         } else {
-            firebase.database().ref("Users/"+nameV+"/Activity/" + postName).update({
-                Reaction: "Unliked",
-                Name: postName
-
-            });
+            firebase.database().ref("Users/"+nameV+"/Activity/" + postName).remove();
             likes--;
             firebase.database().ref(currentref).update({
                 Likes: likes
