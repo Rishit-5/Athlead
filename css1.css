@@ -27,6 +27,28 @@
     background-color: #4CAF50;
     color: white;
 }
+
+.topnav b {
+    float: right;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 24px;
+}
+
+/* Change the color of links on hover */
+.topnav b:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav b.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
 img{
     height: 200px;
     width: 200px;
@@ -36,8 +58,17 @@ img{
     height: 150px;
     width: 150px;
     border-radius: 50%;
-
 }
+
+.addButton{
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
 body {
     margin: 0;
     width: 100%;
@@ -450,4 +481,89 @@ input:checked + .like-btn-svg{
     height: 100px;
     width: 100px;
     border-radius: 50%;
+}
+
+.input-container3{
+    position:absolute;
+    margin-bottom:25px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+.input-container3 label{
+    position:absolute;
+    /*top:0px;*/
+    /*left:0px;*/
+    font-size:24px;
+    color:#fff;
+    pointer-event:none;
+    transition: all 0.5s ease-in-out;
+}
+.input-container3 input{
+    border:0;
+    border-bottom:1px solid #555;
+    background:transparent;
+    width:83%;
+    padding:8px 0 5px 0;
+    font-size:24px;
+    color:#fff;
+}
+.input-container3 button{
+    width: 220px;
+    height: 42px;
+}
+.input-container3 input:focus{
+    border:none;
+    outline:none;
+    border-bottom:1px solid #e74c3c;
+}
+.input-container3 input:focus ~ label,
+.input-container3 input:valid ~ label{
+    top:-24px;
+    font-size:24px;
+
+}
+
+.leftChat {
+    border: 2px solid gray;
+    border-radius: 7%;
+    background: gray;
+    position: relative;
+    left: 0;
+    width: fit-content;
+    justify-content: start;
+    justify-items: start;
+}
+
+.rightChat {
+    border: 2px solid dodgerblue;
+    border-radius: 7%;
+    background: dodgerblue;
+    position: relative;
+    right: 0;
+    width: fit-content;
+    justify-content: end;
+    justify-items: end;
+}
+
+
+.leftHR {
+    color: red;
+}
+
+.rightHR {
+    color: blue;
+}
+
+.phatDiv {
+    border: 2px solid gray;
+    border-radius: 50%;
+    background: gray;
+}
+
+.chatBox {
+    display: flow;
+    grid-template-columns: 100%;
+    margin-bottom: 20px;
+    grid-row-gap: 10px;
 }

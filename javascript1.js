@@ -72,7 +72,6 @@ document.getElementById("enterBtn").onclick = function () {
                                                 }
                                             )
                                         })
-
                                     }
                                 }
                             });
@@ -383,11 +382,6 @@ document.getElementById("searchBtn").onclick = function () {
                                         }
                                     )})
                             }
-
-
-
-
-
                         }
 
                         document.getElementById('searchPage').appendChild(img);
@@ -494,6 +488,9 @@ function commentButton(){
 
                 var img1 = document.createElement('img')
                 img1.className = "pfpcomment";
+                img1.onclick = function() {
+                    viewProfile(CurrentRecord.val().poster)
+                };
 
                 var comment2 = document.createElement('p')
 
@@ -518,11 +515,14 @@ function commentButton(){
         )
     });
 }
-document.getElementById("myprofileBtn").onclick = function () {
+function viewMyProfile() {
     hideMainDivs();
     document.getElementById("myprofilePage").hidden = false;
     document.getElementById("myprofile").hidden = false;
     document.getElementById("postingPage").hidden = true;
+
+    document.getElementById("myUsername").innerHTML = nameV;
+
     var pfpsrc;
     firebase.database().ref("Users/" + nameV + "/PFP/" + "Link").once('value', function (snapshot) {
         pfpsrc = snapshot.val();
@@ -563,30 +563,6 @@ document.getElementById("myprofileBtn").onclick = function () {
                     document.getElementById('postonpostpage').appendChild(img2);
                     postsonpostpage.push(img2);
 
-                    // firebase.database().ref("Users/"+nameV+"/Activity").once('value', function (snapshot) {
-                    //     snapshot.forEach(function (child) {
-                    //             firebase.database().ref('Users/' + nameV + "/Activity/" + child.key + "/" + postName).set({
-                    //                 Test: "gsbdbgx",
-                    //
-                    //             });
-                    //     })
-                    // })
-                    for (let r = 0; r < names.length; r++) {
-                        if (names[r] === nameV) {
-
-                        }
-                        else {
-                            firebase.database().ref('Users/' + names[r] + "/Activity").once('value', function (allRecords) {//goes through all Posts in the database using a foreach
-                                allRecords.forEach(
-                                    function (CurrentRecord) {
-
-                                    }
-
-                                )//pushes the names of the Posts into an array allPosts, which will be used later to generate similarity scores
-                            })
-                        }
-                    }
-
 
                 }
                 document.getElementById('myprofile').appendChild(img);
@@ -594,9 +570,8 @@ document.getElementById("myprofileBtn").onclick = function () {
             })
         });
     });
-
-
 }
+
 function heartchecked() {
     var checkBox = document.getElementById("heart");
     firebase.database().ref(currentref).once('value', function (snapshot) {
@@ -754,7 +729,9 @@ function hideMainDivs() {
     document.getElementById("homePage").hidden = true;
     document.getElementById("myprofilePage").hidden = true;
     document.getElementById("postpage").hidden = true;
-
+    document.getElementById("viewProfiles").hidden = true;
+    document.getElementById("showChatDiv").hidden = true;
+    document.getElementById("showChat").hidden = true;
 }
 
 
@@ -845,46 +822,80 @@ document.getElementById("upload").onclick = function(){
             },
             function () {
                 uploadTask.snapshot.ref.getDownloadURL().then(function (url) {
-                        imgUrl = url;
-                        switch (postType) {
-                            case "recipe":
-                                firebase.database().ref('Users/' + nameV + "/Posts/" + imgName).set({
-                                    Link: imgUrl,
-                                    Type: postType,
-                                    Likes: 0,
-                                    PrepTime: document.getElementById("prepTimetext").value,
-                                    CookTime: document.getElementById("cooktimeText").value,
-                                    ServingSize: document.getElementById("servingSize").value,
-                                    Ingredients: document.getElementById("ingredientBox").innerHTML,
-                                    Method: document.getElementById("methodBox").innerHTML
-                                });
-                                break;
-                            case "workout":
-                                firebase.database().ref('Users/' + nameV + "/Posts/" + imgName).set({
-                                    Link: imgUrl,
-                                    Type: postType,
-                                    Likes: 0,
-                                    Description: document.getElementById("workoutDescBox").innerHTML,
-                                    Workout: document.getElementById("workoutBox").innerHTML,
-                                });
-                                break;
-                            case "quote":
-                                firebase.database().ref('Users/' + nameV + "/Posts/" + imgName).set({
-                                    Link: imgUrl,
-                                    Type: postType,
-                                    Likes: 0,
-                                    Quote: document.getElementById("quoteBox").innerHTML,
-                                });
-                                break;
-                        }
-                        // firebase.database().ref('Users/' + nameV + "/Posts/" + imgName).set({
-                        //     Link: imgUrl,
-                        //     Type: postType
-                        //
-                        // });
-                        alert('image added successfully');
+                    imgUrl = url;
+                    switch (postType) {
+                        case "recipe":
+                            firebase.database().ref('Users/' + nameV + "/Posts/" + imgName).set({
+                                Link: imgUrl,
+                                Type: postType,
+                                Likes: 0,
+                                PrepTime: document.getElementById("prepTimetext").value,
+                                CookTime: document.getElementById("cooktimeText").value,
+                                ServingSize: document.getElementById("servingSize").value,
+                                Ingredients: document.getElementById("ingredientBox").innerHTML,
+                                Method: document.getElementById("methodBox").innerHTML
+                            });
+                            break;
+                        case "workout":
+                            firebase.database().ref('Users/' + nameV + "/Posts/" + imgName).set({
+                                Link: imgUrl,
+                                Type: postType,
+                                Likes: 0,
+                                Description: document.getElementById("workoutDescBox").innerHTML,
+                                Workout: document.getElementById("workoutBox").innerHTML,
+                            });
+                            break;
+                        case "quote":
+                            firebase.database().ref('Users/' + nameV + "/Posts/" + imgName).set({
+                                Link: imgUrl,
+                                Type: postType,
+                                Likes: 0,
+                                Quote: document.getElementById("quoteBox").innerHTML,
+                            });
+                            break;
                     }
-                );
+
+                    for (let i = 0; i < names.length; i++) {
+                        if (names[i] === nameV) {
+
+                        }
+                        else {
+                            firebase.database().ref('Users/' + names[i] + "/Activity").once('value', function (allRecords) {
+                                allRecords.forEach(
+                                    function (CurrentRecord) {
+                                        const data = null;
+
+                                        const xhr = new XMLHttpRequest();
+                                        xhr.withCredentials = true;
+
+                                        xhr.addEventListener("readystatechange", function () {
+                                            if (this.readyState === this.DONE) {
+
+                                                let str = this.responseText
+                                                str = str.substring(str.indexOf("similarity:")+15, str.indexOf("value")-2)
+                                                firebase.database().ref("Users/"+names[i]+"/Activity/" + CurrentRecord.key + "/" + imgName).set({
+                                                    Name: imgName,
+                                                    Similarity: str,
+                                                    Link: imgUrl
+                                                });
+
+                                                // str.substring(str.indexOf("similarity: "), )
+
+                                            }
+                                        });
+
+                                        xhr.open("GET", "https://twinword-text-similarity-v1.p.rapidapi.com/similarity/?text1=" + CurrentRecord.key + "&text2=" + imgName);
+                                        xhr.setRequestHeader("x-rapidapi-key", "6c0ac42843msh4bec17db4b0e9adp128a17jsnfefa5fdddb20");
+                                        xhr.setRequestHeader("x-rapidapi-host", "twinword-text-similarity-v1.p.rapidapi.com");
+
+                                        xhr.send(data);
+                                    }
+                                )
+                            })
+                        }
+                    }
+                    alert('image added successfully');
+                });
             });
 
     } else {
@@ -1000,6 +1011,9 @@ function viewPostPage(postPath, titleName, username) {
 
                 var img1 = document.createElement('img')
                 img1.className = "pfpcomment";
+                img1.onclick = function () {
+                    viewProfile(CurrentRecord.val().poster)
+                };
 
                 var comment2 = document.createElement('p')
 
@@ -1025,3 +1039,143 @@ function viewPostPage(postPath, titleName, username) {
     });
 }
 
+var viewProfPosts = [];
+function viewProfile(userName) {
+    if (userName !== nameV) {
+        hideMainDivs();
+        document.getElementById("viewProfiles").hidden = false;
+        document.getElementById("viewUsername").innerHTML = userName;
+
+        firebase.database().ref("Users/" + userName + "/PFP/Link").on("value", function (snapshot) {
+            pfpsrc = snapshot.val();
+            if (pfpsrc != null) {
+                document.getElementById("viewPfp").src = pfpsrc;
+            } else {
+                document.getElementById("viewPfp").src = "resources/select image picture.PNG";
+            }
+        });
+
+        for (let i = 0; i < viewProfPosts.length; i++) {
+            document.getElementById('viewProfiles').removeChild(viewProfPosts[i])
+        }
+        viewProfPosts = [];
+        firebase.database().ref("Users/" + userName + "/Posts").once('value', function (snapshot) {
+            snapshot.forEach(function (child) {
+                var str = "Users/" + userName + "/Posts/" + child.key;
+
+                firebase.database().ref("Users/" + userName + "/Posts/" + child.key + "/Link").on('value', function (snapshot) {
+                    var img = document.createElement('img');
+
+                    img.src = snapshot.val();
+                    img.onclick = function () {
+                        postName = img.src.substring(img.src.indexOf("%2F") + 3, img.src.indexOf(".png"))
+                        postName = postName.replaceAll("%20", " ")
+                        postName = postName.toUpperCase();
+                        viewPostPage(str, postName, userName)
+                        hideMainDivs();
+                        document.getElementById("postpage").hidden = false;
+                        document.getElementById("heart2").hidden = true;
+                        for (let i = 0; i < postsonpostpage.length; i++) {
+                            document.getElementById('postonpostpage').removeChild(postsonpostpage[i])
+                        }
+                        postsonpostpage = [];
+                        var img2 = document.createElement('img');
+                        img2.src = img.src
+                        img2.className = "postimageonpostpage"
+
+                        document.getElementById('postonpostpage').appendChild(img2);
+                        postsonpostpage.push(img2);
+
+
+                    }
+                    document.getElementById("viewProfiles").appendChild(img);
+                    viewProfPosts.push(img);
+                })
+            });
+        });
+    } else {
+        viewMyProfile();
+    }
+}
+
+document.getElementById("chatsBtn").onclick = function () {
+    hideMainDivs();
+
+    document.getElementById("showChatDiv").hidden = false;
+
+    document.getElementById("viewChats").innerHTML = "";
+
+    firebase.database().ref("Users/"+nameV+"/Chats").once('value', function(snapshot) {
+        snapshot.forEach(function (dmName) {
+            var hr1 = document.createElement('hr')
+
+            var dmpfp = document.createElement("img");
+            firebase.database().ref("Users/" + dmName.key + "/PFP/" + "Link").once('value', function (snapshot) {
+                let pfpsrc = snapshot.val();
+                if (pfpsrc != null) {
+                    dmpfp.src = pfpsrc;
+                }
+            });
+            dmpfp.className = "profilepic"
+
+            var dmPerson = document.createElement("p")
+            dmPerson.innerHTML = dmName.key;
+            var hr2 = document.createElement('hr')
+            var divChats = document.createElement('div')
+            divChats.append(hr1, dmpfp, dmPerson, hr2);
+            divChats.onclick = function() {
+                onChatClicked(dmName.key);
+            }
+
+            document.getElementById("viewChats").append(divChats);
+        })
+    })
+}
+
+function onChatClicked(dmUser) {
+    hideMainDivs();
+    document.getElementById("showChat").hidden = false;
+
+    document.getElementById("chatName").innerHTML = dmUser;
+    var dmpfp = "";
+    firebase.database().ref("Users/" + dmUser + "/PFP/" + "Link").once('value', function (snapshot) {
+        let pfpsrc = snapshot.val();
+        if (pfpsrc != null) {
+            dmpfp = pfpsrc;
+        }
+    });
+    document.getElementById("chatPfp").src = dmpfp;
+
+    firebase.database().ref("Users/"+nameV+"/Chats/"+dmUser).on('value', function(snapshot) {
+        snapshot.forEach(function (text) {
+            // alert(text.val().Texter)
+            var chatDiv = document.createElement("div")
+            var phatDiv = document.createElement("div");
+            phatDiv.className = "phatDiv"
+            var br = document.createElement("br")
+            var hr = document.createElement("hr")
+            var message = document.createElement("p")
+            // var hr = document.createElement("hr")
+            // hr.hidden = true;
+            message.innerHTML = text.val().Text;
+            chatDiv.append(message)
+            phatDiv.append(chatDiv, br, hr)
+            if (text.val().Texter === "You") {//sent by other
+                text.val().Status = "Read";
+                chatDiv.className = "leftChat";
+
+            } else {//sent by me
+                chatDiv.className = "rightChat";
+
+            }
+            document.getElementById("chatBox").append(chatDiv);
+            // for (i = 0;i<chatDiv.scrollHeight;i++) {
+            //     // if (i%5===0) {
+            //
+            //         document.getElementById("chatBox").append(br);
+            //     // }
+            // }
+        })
+    })
+
+}
