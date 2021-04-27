@@ -877,45 +877,45 @@ document.getElementById("upload").onclick = function(){
                                 });
                                 break;
                         }
-                    for (let i = 0; i < names.length; i++) {
-                        if (names[i] === nameV) {
+                        for (let i = 0; i < names.length; i++) {
+                            if (names[i] === nameV) {
 
+                            }
+                            else {
+                                firebase.database().ref('Users/' + names[i] + "/Activity").once('value', function (allRecords) {
+                                    allRecords.forEach(
+                                        function (CurrentRecord) {
+                                            const data = null;
+
+                                            const xhr = new XMLHttpRequest();
+                                            xhr.withCredentials = true;
+
+                                            xhr.addEventListener("readystatechange", function () {
+                                                if (this.readyState === this.DONE) {
+
+                                                    let str = this.responseText
+                                                    str = str.substring(str.indexOf("similarity:")+15, str.indexOf("value")-2)
+                                                    firebase.database().ref("Users/"+names[i]+"/Activity/" + CurrentRecord.key + "/" + imgName).set({
+                                                        Name: imgName,
+                                                        Similarity: str,
+                                                        Link: imgUrl
+                                                    });
+
+                                                    // str.substring(str.indexOf("similarity: "), )
+
+                                                }
+                                            });
+
+                                            xhr.open("GET", "https://twinword-text-similarity-v1.p.rapidapi.com/similarity/?text1=" + CurrentRecord.key + "&text2=" + imgName);
+                                            xhr.setRequestHeader("x-rapidapi-key", "6c0ac42843msh4bec17db4b0e9adp128a17jsnfefa5fdddb20");
+                                            xhr.setRequestHeader("x-rapidapi-host", "twinword-text-similarity-v1.p.rapidapi.com");
+
+                                            xhr.send(data);
+                                        }
+                                    )
+                                })
+                            }
                         }
-                        else {
-                            firebase.database().ref('Users/' + names[i] + "/Activity").once('value', function (allRecords) {
-                                allRecords.forEach(
-                                    function (CurrentRecord) {
-                                        const data = null;
-
-                                        const xhr = new XMLHttpRequest();
-                                        xhr.withCredentials = true;
-
-                                        xhr.addEventListener("readystatechange", function () {
-                                            if (this.readyState === this.DONE) {
-
-                                                let str = this.responseText
-                                                str = str.substring(str.indexOf("similarity:")+15, str.indexOf("value")-2)
-                                                firebase.database().ref("Users/"+names[i]+"/Activity/" + CurrentRecord.key + "/" + imgName).set({
-                                                    Name: imgName,
-                                                    Similarity: str,
-                                                    Link: imgUrl
-                                                });
-
-                                                // str.substring(str.indexOf("similarity: "), )
-
-                                            }
-                                        });
-
-                                        xhr.open("GET", "https://twinword-text-similarity-v1.p.rapidapi.com/similarity/?text1=" + CurrentRecord.key + "&text2=" + imgName);
-                                        xhr.setRequestHeader("x-rapidapi-key", "6c0ac42843msh4bec17db4b0e9adp128a17jsnfefa5fdddb20");
-                                        xhr.setRequestHeader("x-rapidapi-host", "twinword-text-similarity-v1.p.rapidapi.com");
-
-                                        xhr.send(data);
-                                    }
-                                )
-                            })
-                        }
-                    }
                         alert('image added successfully');
                     }
                 );
