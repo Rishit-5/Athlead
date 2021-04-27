@@ -1145,8 +1145,8 @@ function onChatClicked(dmUser) {
         }
     });
     document.getElementById("chatPfp").src = dmpfp;
-
     firebase.database().ref("Users/"+nameV+"/Chats/"+dmUser).on('value', function(snapshot) {
+        document.getElementById("chatBox").innerHTML = "";
         snapshot.forEach(function (text) {
             // alert(text.val().Texter)
             var chatDiv = document.createElement("div")
@@ -1178,4 +1178,85 @@ function onChatClicked(dmUser) {
         })
     })
 
+}
+
+document.getElementById("sendMsgBtn").onclick = function() {
+    var msg = document.getElementById("sendMsgtxt").value;
+    var tempCheck = msg.replace(/\s/g, '');
+    if (tempCheck.length > 0) {
+        var x = new Date();
+        // alert(formatAMPM(x))
+
+
+        //2 pushes 1 to nameV and one to id="chatName"
+        firebase.database().ref("Users/"+nameV+"/Chats/"+document.getElementById("chatName").innerHTML.toString()).push({
+            Text: msg,
+            Texter: "Me",
+            Time: formatAMPM(new Date())
+        })
+
+        firebase.database().ref("Users/"+document.getElementById("chatName").innerHTML.toString()+"/Chats/"+nameV).push({
+            Text: msg,
+            Texter: "You",
+            Time: formatAMPM(new Date()),
+            Status: "Unopened"
+        })
+
+        document.getElementById("sendMsgtxt").value = "";
+        //update by adding chatDiv append
+
+    }
+}
+
+function formatAMPM(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours>=12 ? 'PM' : 'AM';
+    hours = hours%12;
+    hours = hours ? hours: 12;
+    minutes = minutes <10 ? '0'+minutes : minutes;
+    var strTime = hours + ":" + minutes + " " + ampm;
+    return strTime;
+}
+
+
+document.getElementById("newChatBtn").onclick = function () {
+    var username = prompt("What is the username of the person you are trying to message?");
+
+    firebase.database().ref("Users/"+username).once("value", function (snapshot){
+        if (snapshot.exists()) {
+            hideMainDivs();
+            document.getElementById("showChat").hidden = false;
+            onChatClicked(username)
+        } else {
+
+            alert("There is no account with this username. Make sure you entered the right username.")
+        }
+    })
+}
+
+document.getElementById("msgBtn").onclick = function () {
+    hideMainDivs();
+    document.getElementById("showChat").hidden = false;
+
+    document.getElementById("chatName").innerHTML = document.getElementById("viewUsername").innerHTML.toString();
+    var dmpfp = "";
+    firebase.database().ref("Users/" + document.getElementById("viewUsername").innerHTML.toString() + "/PFP/" + "Link").once('value', function (snapshot) {
+        let pfpsrc = snapshot.val();
+        if (pfpsrc != null) {
+            dmpfp = pfpsrc;
+        }
+    });
+    document.getElementById("chatPfp").src = dmpfp;
+
+
+    firebase.database().ref("Users/"+nameV+"/Chats/"+document.getElementById("viewUsername").innerHTML.toString()).once('value', function (snapshot) {
+        if (snapshot.exists()) {
+            // alert("exists")
+            onChatClicked(document.getElementById("viewUsername").innerHTML.toString())
+        } else {
+            document.getElementById("chatBox").innerHTML = 0;
+            // alert("NO")
+        }
+    })
 }

@@ -566,4 +566,7 @@ input:checked + .like-btn-svg{
     grid-template-columns: 100%;
     margin-bottom: 20px;
     grid-row-gap: 10px;
+    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
