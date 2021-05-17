@@ -30,6 +30,7 @@ var allComments = [];
 var likedPosts = [];
 var similarityScores = [];
 var homePosts = [];
+var checkedPosts = false;
 
 
 document.getElementById("enterBtn").onclick = function () {
@@ -216,63 +217,70 @@ document.getElementById("homeBtn").onclick = function () {
                         }
                     )
                     similarityScores.push(insideSim)
+                    if (!checkedPosts){
+                        var sumArray = [];
+                        for (let i = 0; i < similarityScores[0].length; i++) {
+                            sumArray.push(0)
+                        }
+                        for (let i = 0; i < similarityScores.length; i++) {
+                            for (let j = 0; j < similarityScores[0].length; j++) {
+                                sumArray[j] = (parseFloat(sumArray[j]) + Math.pow(parseFloat(similarityScores[i][j])*10,2))
+                            }
+                        }
+
+                        var reducedArray = removeDuplicates(postNames)
+                        var nameSim = [];
+                        for (let i = 0; i < reducedArray.length; i++) {
+                            var tempArray = [];
+                            tempArray.push(reducedArray[i])
+                            tempArray.push(sumArray[i])
+                            tempArray.push(links[i])
+                            nameSim.push(tempArray)
+                        }
+                        for (let i = 0; i < nameSim.length; i++) {
+                            for (let j = 0; j < liked.length; j++) {
+                                if (liked[j] === nameSim[i][0]){
+                                    nameSim.splice(i,1)
+                                    i = 0;
+                                }
+                            }
+                        }
+
+                        var done = false;
+                        while (!done) {
+                            done = true;
+                            for (var i = 1; i < nameSim.length; i += 1) {
+                                if (nameSim[i - 1][1] < nameSim[i][1]) {
+                                    done = false;
+                                    var tmp = nameSim[i - 1];
+                                    nameSim[i - 1] = nameSim[i];
+                                    nameSim[i] = tmp;
+                                }
+                            }
+                        }
+                        console.log(nameSim)//nameSim is a 2D array with both the name of the posts and its similarity score, but the ones with a similarity score of 1 are removed so it's just other posts
+                        //The array is also sorted based on the similarity scores from highest to lowest
+                        for (let i = 0; i < homePosts.length; i++) {
+                            homePosts[i].remove();
+                        }
+                        homePosts = [];
+                        for (let i = 0; i < nameSim.length; i++) {
+                            if (i <= 9) {
+                                var img2 = document.createElement('img');
+                                img2.src = nameSim[i][2]
+                                homePosts.push(img2)
+                                document.getElementById('homePage').appendChild(img2);
+                            }
+                            //TODO: Update similarity score when a user makes a post
+                            checkedPosts = true;
+                        }
+                    }
                 })
             }
         )
-        var sumArray = [];
-        for (let i = 0; i < similarityScores[0].length; i++) {
-            sumArray.push(0)
-        }
-        for (let i = 0; i < similarityScores.length; i++) {
-            for (let j = 0; j < similarityScores[0].length; j++) {
-                sumArray[j] = (parseFloat(sumArray[j]) + Math.pow(parseFloat(similarityScores[i][j])*10,2))
-            }
-        }
 
-        var reducedArray = removeDuplicates(postNames)
-        var nameSim = [];
-        for (let i = 0; i < reducedArray.length; i++) {
-            var tempArray = [];
-            tempArray.push(reducedArray[i])
-            tempArray.push(sumArray[i])
-            tempArray.push(links[i])
-            nameSim.push(tempArray)
-        }
-        for (let i = 0; i < nameSim.length; i++) {
-            for (let j = 0; j < liked.length; j++) {
-                if (liked[j] === nameSim[i][0]){
-                    nameSim.splice(i,1)
-                    i = 0;
-                }
-            }
-        }
-
-        var done = false;
-        while (!done) {
-            done = true;
-            for (var i = 1; i < nameSim.length; i += 1) {
-                if (nameSim[i - 1][1] < nameSim[i][1]) {
-                    done = false;
-                    var tmp = nameSim[i - 1];
-                    nameSim[i - 1] = nameSim[i];
-                    nameSim[i] = tmp;
-                }
-            }
-        }
-        console.log(nameSim)//nameSim is a 2D array with both the name of the posts and its similarity score, but the ones with a similarity score of 1 are removed so it's just other posts
-        //The array is also sorted based on the similarity scores from highest to lowest
-        for (let i = 0; i < homePosts.length; i++) {
-            homePosts[i].remove();
-        }
-        homePosts = [];
-        for (let i = 0; i < nameSim.length; i++) {
-            var img2 = document.createElement('img');
-            img2.src = nameSim[i][2]
-            homePosts.push(img2)
-            document.getElementById('homePage').appendChild(img2);
-        }
-        //TODO: Update similarity score when a user makes a post
     })
+    checkedPosts = false;
 
 
 
@@ -1143,8 +1151,9 @@ function onChatClicked(dmUser) {
         if (pfpsrc != null) {
             dmpfp = pfpsrc;
         }
+        document.getElementById("chatPfp").src = dmpfp;
     });
-    document.getElementById("chatPfp").src = dmpfp;
+
     firebase.database().ref("Users/"+nameV+"/Chats/"+dmUser).on('value', function(snapshot) {
         document.getElementById("chatBox").innerHTML = "";
         snapshot.forEach(function (text) {

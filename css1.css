@@ -185,7 +185,7 @@ button:after {
     top:50%;
     transform: translate(-50%,-50%);
     background-color: rgba(0, 0, 0, 0.5);
-    border-radius:3px;
+    border-radius:5%;
     padding:70px 100px;
 }
 .input-container{
@@ -540,10 +540,13 @@ input:checked + .like-btn-svg{
     border-radius: 7%;
     background: dodgerblue;
     position: relative;
-    right: 0;
     width: fit-content;
     justify-content: end;
     justify-items: end;
+}
+.rightDiv {
+    align-content: center;
+    background-color: transparent;
 }
 
 
