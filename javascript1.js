@@ -11,7 +11,7 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-var nameV,emailV,passWV,genV;
+var nameV,emailV,passWV,genV, bioV;
 var files = [];
 var yourPosts = [];
 var imageVs = [];
@@ -130,8 +130,10 @@ document.getElementById("signupenterBtn").onclick = function() {
     nameV = document.getElementById("signUpNamebox").value;
     emailV = document.getElementById("signUpEmailbox").value;
     passWV = document.getElementById("signUpPassbox").value;
+    bioV = document.getElementById("enterBio").value;
 
-    if (!(nameV == "") && !(emailV == "") && !(passWV == "")) {
+
+    if (!(nameV === "") && !(emailV === "") && !(passWV === "") && !(bioV === "")) {
         var alreadyExists = false;
 
         // do {
@@ -169,19 +171,19 @@ document.getElementById("signupenterBtn").onclick = function() {
                 });
             }
             if (!alreadyExists) {
-                var bio = prompt("Please write a short bio about yourself");
-                var tempBio = bio.replace(/\s/g, '');
-                while(tempBio.length===0) {
-                    bio = prompt("Please write a short bio about yourself");
-                    tempBio = bio.replace(/\s/g, '');
-                }
-                myBio = bio;
+                // var bio = prompt("Please write a short bio about yourself");
+                // var tempBio = bio.replace(/\s/g, '');
+                // while(tempBio.length===0) {
+                //     bio = prompt("Please write a short bio about yourself");
+                //     tempBio = bio.replace(/\s/g, '');
+                // }
+                myBio = bioV;
                 firebase.database().ref("Users/" + nameV).set({
                     Name: nameV,
                     Email: emailV,
                     Password: passWV,
                     Followers: 0,
-                    Bio: bio,
+                    Bio: myBio,
 
 
                 });
@@ -731,6 +733,23 @@ function heartchecked() {
     });
 
 }
+
+document.getElementById("editBio").onclick = function() {
+    var bio = prompt("What would you like your new quote to be?");
+    var tempBio = bio.replace(/\s/g, '');
+    while(tempBio.length===0) {
+        bio = prompt("What would you like your new quote to be?");
+        tempBio = bio.replace(/\s/g, '');
+    }
+    myBio = bio;
+    document.getElementById("myBio").innerHTML = myBio;
+    firebase.database().ref("Users/" + nameV).update({
+        Bio: myBio,
+    });
+}
+
+
+
 document.getElementById("pfp").onclick = function() {
     var input = document.createElement('input');
     input.type = 'file';
@@ -1348,6 +1367,7 @@ document.getElementById("newChatBtn").onclick = function () {
 document.getElementById("msgBtn").onclick = function () {
     hideMainDivs();
     document.getElementById("showChat").hidden = false;
+    chatOpened = true;
 
     document.getElementById("chatName").innerHTML = document.getElementById("viewUsername").innerHTML.toString();
     var dmpfp = "";
@@ -1365,7 +1385,8 @@ document.getElementById("msgBtn").onclick = function () {
             // alert("exists")
             onChatClicked(document.getElementById("viewUsername").innerHTML.toString())
         } else {
-            document.getElementById("chatBox").innerHTML = 0;
+            onChatClicked(document.getElementById("viewUsername").innerHTML.toString())
+            // document.getElementById("chatBox").innerHTML = 0;
             // alert("NO")
         }
     })
