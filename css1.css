@@ -548,14 +548,14 @@ input:checked + .like-btn-svg{
     justify-items: end;
 
     /*     float: right; */
-
-    right: 0;
+    margin-left: auto;
+    /*     right: 0; */
     /*float: right;*/
     /*align-items: flex-end;*/
 }
 
 .mineOuter {
-    background-color: #e74c3c;
+    background-color: transparent;
     /*     display: inline-block; */
     right:0;
     position: relative;
@@ -572,7 +572,7 @@ input:checked + .like-btn-svg{
 }
 
 .yoursOuter {
-    background-color: #48ff00;
+    background-color: transparent;
     position: relative;
     width: 100%;
     align-items: flex-start;
@@ -581,7 +581,7 @@ input:checked + .like-btn-svg{
     /*     justify-content: start;
         justify-items: start; */
 
-    margin-right: 25%;
+    /*     margin-right: 25%; */
 }
 
 /*.rightDiv {*/
