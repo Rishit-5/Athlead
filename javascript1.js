@@ -1163,25 +1163,27 @@ function onChatClicked(dmUser) {
         snapshot.forEach(function (text) {
             // alert(text.val().Texter)
             var chatDiv = document.createElement("div")
-            var phatDiv = document.createElement("div");
-            phatDiv.className = "phatDiv"
-            var br = document.createElement("br")
-            var hr = document.createElement("hr")
+            var outerDiv = document.createElement("div");
+
+            // var br = document.createElement("br")
+            // var hr = document.createElement("hr")
             var message = document.createElement("p")
             // var hr = document.createElement("hr")
             // hr.hidden = true;
             message.innerHTML = text.val().Text;
             chatDiv.append(message)
-            phatDiv.append(chatDiv, br, hr)
             if (text.val().Texter === "You") {//sent by other
                 text.val().Status = "Read";
                 chatDiv.className = "leftChat";
+                outerDiv.className = "yoursOuter";
 
             } else {//sent by me
                 chatDiv.className = "rightChat";
+                outerDiv.className = "mineOuter";
 
             }
-            document.getElementById("chatBox").append(chatDiv);
+            outerDiv.append(chatDiv)
+            document.getElementById("chatBox").append(outerDiv);
             // for (i = 0;i<chatDiv.scrollHeight;i++) {
             //     // if (i%5===0) {
             //
