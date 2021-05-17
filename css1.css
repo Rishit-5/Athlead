@@ -69,7 +69,8 @@ img{
     right: 0;
 }
 
-body {
+.bodyClass {
+    background-image: none;
     margin: 0;
     width: 100%;
     height: 100vh;
@@ -80,7 +81,21 @@ body {
     -webkit-animation: gradientBG 20s ease infinite;
     animation: gradientBG 20s ease infinite;
 
-
+}
+.galaxy{
+    background-size: 100%;
+    background-image: url("resources/galaxy.png");
+    color:white;
+}
+.beach{
+    background-size: 100%;
+    background-image: url("resources/beach.png");
+    color:white;
+}
+.cubes{
+    background-size: 100%;
+    background-image: url("resources/cubes.png");
+    color:white;
 }
 button {
     width: 220px;
@@ -603,7 +618,21 @@ input:checked + .like-btn-svg{
 /*    border-radius: 50%;*/
 /*    background: gray;*/
 /*}*/
+.homeUserDiv {
+    background-color:dimgray;
+    align-items: center;
+    border-radius: 20px;
+    margin: 7px;
+}
 
+.homeUserDiv p {
+    text-align: center;
+}
+
+.homeUsers {
+    margin: 15px;
+    display: flex;
+}
 .chatBox {
     position: fixed;
     display: flow;

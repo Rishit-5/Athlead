@@ -12,7 +12,6 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 var nameV,emailV,passWV,genV;
-var myBio;
 var files = [];
 var yourPosts = [];
 var imageVs = [];
@@ -32,6 +31,8 @@ var likedPosts = [];
 var similarityScores = [];
 var homePosts = [];
 var checkedPosts = false;
+var myBio;
+
 
 
 document.getElementById("enterBtn").onclick = function () {
@@ -48,7 +49,6 @@ document.getElementById("enterBtn").onclick = function () {
                     firebase.database().ref("Users/" + nameV + "/Password").on('value', function (snapshot) {
                         passpass = snapshot.val();
                     });
-
 
                     if (passWV === passpass) {
                         firebase.database().ref("Users/" + nameV + "/Bio").on('value', function (snapshot) {
@@ -87,6 +87,10 @@ document.getElementById("enterBtn").onclick = function () {
                         document.getElementById("app").hidden = false;
                         hideMainDivs();
                         document.getElementById("homePage").hidden = true;
+                        firebase.database().ref("Users/" + nameV + "/Background").on('value', function (snapshot) {
+                            document.getElementById("body").className = snapshot.val();
+
+                        });
                     } else {
                         alert("incorrect")
                     }
@@ -179,6 +183,10 @@ document.getElementById("signupenterBtn").onclick = function() {
                     Followers: 0,
                     Bio: bio,
 
+
+                });
+                firebase.database().ref("Users/"+nameV).update({
+                    Background: "bodyClass"
                 });
                 loggedIN == true;
 
@@ -289,12 +297,10 @@ document.getElementById("homeBtn").onclick = function () {
                         }
                     }
                 })
-
             }
         )
 
     })
-
     checkedPosts = false;
     firebase.database().ref("Users/").once('value', function(snapshot) {
         var i = 0;
@@ -575,6 +581,7 @@ function viewMyProfile() {
     document.getElementById("myUsername").innerHTML = nameV;
     document.getElementById("myBio").innerHTML = myBio;
 
+
     var pfpsrc;
     firebase.database().ref("Users/" + nameV + "/PFP/" + "Link").once('value', function (snapshot) {
         pfpsrc = snapshot.val();
@@ -784,9 +791,14 @@ function hideMainDivs() {
     document.getElementById("viewProfiles").hidden = true;
     document.getElementById("showChatDiv").hidden = true;
     document.getElementById("showChat").hidden = true;
+    document.getElementById("personalPage").hidden = true;
+
     chatOpened = false;
 }
-
+function Customize(){
+    hideMainDivs()
+    document.getElementById("personalPage").hidden = false;
+}
 
 document.getElementById("simage").onclick = function(){
     var input = document.createElement('input');
@@ -1001,7 +1013,32 @@ for (const option of document.querySelectorAll(".custom-option")) {
     })
 }
 
-
+function setBackground(backNum){
+    if (backNum === 0){
+        document.getElementById("body").className = "bodyClass"
+        firebase.database().ref("Users/"+nameV).update({
+            Background: "bodyClass"
+        });
+    }
+    if (backNum === 1){
+        document.getElementById("body").className = "galaxy"
+        firebase.database().ref("Users/"+nameV).update({
+            Background: "galaxy"
+        });
+    }
+    if (backNum === 2){
+        document.getElementById("body").className = "beach"
+        firebase.database().ref("Users/"+nameV).update({
+            Background: "beach"
+        });
+    }
+    if (backNum === 3){
+        document.getElementById("body").className = "cubes"
+        firebase.database().ref("Users/"+nameV).update({
+            Background: "cubes"
+        });
+    }
+}
 window.addEventListener('click', function (e) {
     for (const select of document.querySelectorAll('.custom-select')) {
         if (!select.contains(e.target)) {
@@ -1098,11 +1135,9 @@ function viewProfile(userName) {
         hideMainDivs();
         document.getElementById("viewProfiles").hidden = false;
         document.getElementById("viewUsername").innerHTML = userName;
-
         firebase.database().ref("Users/" + userName + "/Bio").on('value', function (snapshot) {
             document.getElementById("viewBio").innerHTML = snapshot.val();
         });
-
 
         firebase.database().ref("Users/" + userName + "/PFP/Link").on("value", function (snapshot) {
             pfpsrc = snapshot.val();

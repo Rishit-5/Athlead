@@ -9,7 +9,7 @@
 
 </head>
 
-<body id="body">
+<body id="body" id = "body" class = "bodyClass">
 
 <div id = "signinScreen" class = "box" >
 
@@ -69,6 +69,7 @@
         <a href = "#" id="homeBtn">HOME</a>
         <a href = "#" id="searchBtn">SEARCH</a>
         <a href = "#" id="myprofileBtn" onclick = "viewMyProfile()">PROFILE</a>
+        <a href = "#" id="personal" onclick = "Customize()">CUSTOMIZE</a>
         <b href = "#" id="chatsBtn">CHATS</b>
     </div>
 
@@ -82,7 +83,6 @@
     </div>
 
     <div id = "homePage">
-
         <div id = "topPosts">
             <h1>TOP POSTS</h1>
             <hr>
@@ -101,6 +101,12 @@
 
         </div>
     </div>
+    <div id = "personalPage" hidden = hidden>
+        <img src="resources/fade.png" href = "#" onclick="setBackground(0)"/>
+        <img src="resources/galaxy.png" href = "#" onclick="setBackground(1)"/>
+        <img src="resources/beach.png" href = "#" onclick="setBackground(2)"/>
+        <img src="resources/cubes.png" href = "#" onclick="setBackground(3)"/>
+    </div>
 
     <div id = "myprofilePage">
 
@@ -108,6 +114,7 @@
             <img class = "profilepic" id = "pfp" src="resources/select image picture.PNG" height="100" width="100"/>
             <p id = "myUsername"></p>
             <p id = "myBio"></p>
+
             <button id="postBtn">POST</button>
             <br>
             <br>
@@ -279,7 +286,7 @@
 
     </div>
 
-    <div class="input-container3" >
+    <div class="input-container3">
         <hr>
         <input id="sendMsgtxt" type="text" required="" value="" placeholder="Type Message..."/>
         <!--        <label>Type Message...</label>-->
