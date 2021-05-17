@@ -740,6 +740,7 @@ function hideMainDivs() {
     document.getElementById("viewProfiles").hidden = true;
     document.getElementById("showChatDiv").hidden = true;
     document.getElementById("showChat").hidden = true;
+    chatOpened = false;
 }
 
 
@@ -1140,8 +1141,11 @@ document.getElementById("chatsBtn").onclick = function () {
     })
 }
 
+var chatOpened = false;
+
 function onChatClicked(dmUser) {
     hideMainDivs();
+    chatOpened = true;
     document.getElementById("showChat").hidden = false;
 
     document.getElementById("chatName").innerHTML = dmUser;
@@ -1157,37 +1161,60 @@ function onChatClicked(dmUser) {
     firebase.database().ref("Users/"+nameV+"/Chats/"+dmUser).on('value', function(snapshot) {
         document.getElementById("chatBox").innerHTML = "";
         snapshot.forEach(function (text) {
+            // alert(text.val().Texter)
             var chatDiv = document.createElement("div")
-            var phatDiv = document.createElement("div");
-            phatDiv.className = "phatDiv"
-            var br = document.createElement("br")
-            var hr = document.createElement("hr")
-            var message = document.createElement("p")
+            var outerDiv = document.createElement("div");
 
+            // var br = document.createElement("br")
+            // var hr = document.createElement("hr")
+            var message = document.createElement("p")
+            // var hr = document.createElement("hr")
+            // hr.hidden = true;
             message.innerHTML = text.val().Text;
             chatDiv.append(message)
-            phatDiv.append(chatDiv, br, hr)
             if (text.val().Texter === "You") {//sent by other
                 text.val().Status = "Read";
                 chatDiv.className = "leftChat";
+                outerDiv.className = "yoursOuter";
 
             } else {//sent by me
                 chatDiv.className = "rightChat";
+                outerDiv.className = "mineOuter";
 
             }
-            document.getElementById("chatBox").append(chatDiv);
-
+            outerDiv.append(chatDiv)
+            document.getElementById("chatBox").append(outerDiv);
+            // for (i = 0;i<chatDiv.scrollHeight;i++) {
+            //     // if (i%5===0) {
+            //
+            //         document.getElementById("chatBox").append(br);
+            //     // }
+            // }
         })
     })
 
 }
 
+
+document.onkeydown = function (e) {
+    if(e.keyCode === 13 && chatOpened) {
+        sendChatMsg()
+    }
+}
+
 document.getElementById("sendMsgBtn").onclick = function() {
+    sendChatMsg()
+}
+
+function sendChatMsg() {
     var msg = document.getElementById("sendMsgtxt").value;
     var tempCheck = msg.replace(/\s/g, '');
     if (tempCheck.length > 0) {
         var x = new Date();
+        // alert(formatAMPM(x))
 
+
+        //2 pushes 1 to nameV and one to id="chatName"
         firebase.database().ref("Users/"+nameV+"/Chats/"+document.getElementById("chatName").innerHTML.toString()).push({
             Text: msg,
             Texter: "Me",

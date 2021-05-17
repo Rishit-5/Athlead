@@ -529,38 +529,80 @@ input:checked + .like-btn-svg{
     border-radius: 7%;
     background: gray;
     position: relative;
-    left: 0;
     width: fit-content;
     justify-content: start;
     justify-items: start;
+
+    /*     left: 0; */
+    /*     float: left; */
+    /*align-items: flex-start;*/
 }
 
 .rightChat {
     border: 2px solid dodgerblue;
     border-radius: 7%;
     background: dodgerblue;
-    position: fixed;
+    position: relative;
+    width: fit-content;
+    justify-content: end;
+    justify-items: end;
+
+    /*     float: right; */
+
     right: 0;
-}
-.rightDiv {
-    align-content: center;
-    background-color: transparent;
+    /*float: right;*/
+    /*align-items: flex-end;*/
 }
 
+.mineOuter {
+    background-color: #e74c3c;
+    /*     display: inline-block; */
+    right:0;
+    position: relative;
+    width: 100%;
+    align-items: flex-end;
+    height: fit-content;
+    /*float: right;*/
+    /*     justify-content: end;
+        justify-items: end; */
 
-.leftHR {
-    color: red;
+    /*     margin-left: 96%; */
+
+    /*width: fit-content;*/
 }
 
-.rightHR {
-    color: blue;
+.yoursOuter {
+    background-color: #48ff00;
+    position: relative;
+    width: 100%;
+    align-items: flex-start;
+    height: fit-content;
+
+    /*     justify-content: start;
+        justify-items: start; */
+
+    margin-right: 25%;
 }
 
-.phatDiv {
-    border: 2px solid gray;
-    border-radius: 50%;
-    background: gray;
-}
+/*.rightDiv {*/
+/*    align-content: center;*/
+/*    background-color: transparent;*/
+/*}*/
+
+
+/*.leftHR {*/
+/*    color: red;*/
+/*}*/
+
+/*.rightHR {*/
+/*    color: blue;*/
+/*}*/
+
+/*.phatDiv {*/
+/*    border: 2px solid gray;*/
+/*    border-radius: 50%;*/
+/*    background: gray;*/
+/*}*/
 
 .chatBox {
     position: fixed;
