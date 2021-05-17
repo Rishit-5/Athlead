@@ -539,10 +539,9 @@ input:checked + .like-btn-svg{
     border: 2px solid dodgerblue;
     border-radius: 7%;
     background: dodgerblue;
-    position: relative;
     width: fit-content;
-    justify-content: end;
-    justify-items: end;
+    position: fixed;
+    right: 0;
 }
 .rightDiv {
     align-content: center;

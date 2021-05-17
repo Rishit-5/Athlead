@@ -1157,15 +1157,13 @@ function onChatClicked(dmUser) {
     firebase.database().ref("Users/"+nameV+"/Chats/"+dmUser).on('value', function(snapshot) {
         document.getElementById("chatBox").innerHTML = "";
         snapshot.forEach(function (text) {
-            // alert(text.val().Texter)
             var chatDiv = document.createElement("div")
             var phatDiv = document.createElement("div");
             phatDiv.className = "phatDiv"
             var br = document.createElement("br")
             var hr = document.createElement("hr")
             var message = document.createElement("p")
-            // var hr = document.createElement("hr")
-            // hr.hidden = true;
+
             message.innerHTML = text.val().Text;
             chatDiv.append(message)
             phatDiv.append(chatDiv, br, hr)
@@ -1178,12 +1176,7 @@ function onChatClicked(dmUser) {
 
             }
             document.getElementById("chatBox").append(chatDiv);
-            // for (i = 0;i<chatDiv.scrollHeight;i++) {
-            //     // if (i%5===0) {
-            //
-            //         document.getElementById("chatBox").append(br);
-            //     // }
-            // }
+
         })
     })
 
@@ -1194,10 +1187,7 @@ document.getElementById("sendMsgBtn").onclick = function() {
     var tempCheck = msg.replace(/\s/g, '');
     if (tempCheck.length > 0) {
         var x = new Date();
-        // alert(formatAMPM(x))
 
-
-        //2 pushes 1 to nameV and one to id="chatName"
         firebase.database().ref("Users/"+nameV+"/Chats/"+document.getElementById("chatName").innerHTML.toString()).push({
             Text: msg,
             Texter: "Me",
