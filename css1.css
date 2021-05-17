@@ -483,46 +483,7 @@ input:checked + .like-btn-svg{
     border-radius: 50%;
 }
 
-.input-container3{
-    position:absolute;
-    margin-bottom:25px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
-.input-container3 label{
-    position:absolute;
-    /*top:0px;*/
-    /*left:0px;*/
-    font-size:24px;
-    color:#fff;
-    pointer-event:none;
-    transition: all 0.5s ease-in-out;
-}
-.input-container3 input{
-    border:0;
-    border-bottom:1px solid #555;
-    background:transparent;
-    width:83%;
-    padding:8px 0 5px 0;
-    font-size:24px;
-    color:#fff;
-}
-.input-container3 button{
-    width: 220px;
-    height: 42px;
-}
-.input-container3 input:focus{
-    border:none;
-    outline:none;
-    border-bottom:1px solid #e74c3c;
-}
-.input-container3 input:focus ~ label,
-.input-container3 input:valid ~ label{
-    top:-24px;
-    font-size:24px;
 
-}
 
 .leftChat {
     border: 2px solid gray;
@@ -564,6 +525,50 @@ input:checked + .like-btn-svg{
     background: gray;
 }
 
+.input-container3{
+    position:relative;
+    margin-bottom:25px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 20%;
+    /*flex: 3;*/
+}
+.input-container3 label{
+    position:absolute;
+    /*top:0px;*/
+    /*left:0px;*/
+    font-size:24px;
+    color:#fff;
+    pointer-event:none;
+    transition: all 0.5s ease-in-out;
+}
+.input-container3 input{
+    border:0;
+    border-bottom:1px solid #555;
+    background:transparent;
+    width:83%;
+    padding:8px 0 5px 0;
+    font-size:24px;
+    color:#fff;
+}
+.input-container3 button{
+    width: 220px;
+    height: 42px;
+}
+.input-container3 input:focus{
+    border:none;
+    outline:none;
+    border-bottom:1px solid #e74c3c;
+}
+.input-container3 input:focus ~ label,
+.input-container3 input:valid ~ label{
+    top:-24px;
+    font-size:24px;
+
+}
+
 .chatBox {
     display: flow;
     grid-template-columns: 100%;
@@ -572,4 +577,15 @@ input:checked + .like-btn-svg{
     overflow: scroll;
     overflow-x: hidden;
     overflow-y: auto;
+    width: 100%;
+    height: 55%;
+
+    /*flex: 5;*/
+}
+
+
+.chatInfo {
+    width: 100%;
+    height: 25%;
+    /*flex: 3;*/
 }

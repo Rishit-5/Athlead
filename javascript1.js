@@ -740,6 +740,7 @@ function hideMainDivs() {
     document.getElementById("viewProfiles").hidden = true;
     document.getElementById("showChatDiv").hidden = true;
     document.getElementById("showChat").hidden = true;
+    chatOpened = false;
 }
 
 
@@ -1140,8 +1141,11 @@ document.getElementById("chatsBtn").onclick = function () {
     })
 }
 
+var chatOpened = false;
+
 function onChatClicked(dmUser) {
     hideMainDivs();
+    chatOpened = true;
     document.getElementById("showChat").hidden = false;
 
     document.getElementById("chatName").innerHTML = dmUser;
@@ -1189,7 +1193,18 @@ function onChatClicked(dmUser) {
 
 }
 
+
+document.onkeydown = function (e) {
+    if(e.keyCode === 13 && chatOpened) {
+        sendChatMsg()
+    }
+}
+
 document.getElementById("sendMsgBtn").onclick = function() {
+    sendChatMsg()
+}
+
+function sendChatMsg() {
     var msg = document.getElementById("sendMsgtxt").value;
     var tempCheck = msg.replace(/\s/g, '');
     if (tempCheck.length > 0) {
