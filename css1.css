@@ -565,11 +565,13 @@ input:checked + .like-btn-svg{
 }
 
 .chatBox {
+    position: fixed;
     display: flow;
     grid-template-columns: 100%;
     margin-bottom: 20px;
     grid-row-gap: 10px;
-    overflow: scroll;
     overflow-x: hidden;
     overflow-y: auto;
+    height: 61%;
+    width: 100%
 }
