@@ -539,7 +539,6 @@ input:checked + .like-btn-svg{
     border: 2px solid dodgerblue;
     border-radius: 7%;
     background: dodgerblue;
-    width: fit-content;
     position: fixed;
     right: 0;
 }
