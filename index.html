@@ -9,7 +9,7 @@
 
 </head>
 
-<body id="body">
+<body id="body" id = "body" class = "bodyClass">
 
 <div id = "signinScreen" class = "box" >
 
@@ -69,6 +69,7 @@
         <a href = "#" id="homeBtn">HOME</a>
         <a href = "#" id="searchBtn">SEARCH</a>
         <a href = "#" id="myprofileBtn" onclick = "viewMyProfile()">PROFILE</a>
+        <a href = "#" id="personal" onclick = "Customize()">CUSTOMIZE</a>
         <b href = "#" id="chatsBtn">CHATS</b>
     </div>
 
@@ -83,6 +84,12 @@
 
     <div id = "homePage">
 
+    </div>
+    <div id = "personalPage" hidden = hidden>
+        <img src="resources/fade.png" href = "#" onclick="setBackground(0)"/>
+        <img src="resources/galaxy.png" href = "#" onclick="setBackground(1)"/>
+        <img src="resources/beach.png" href = "#" onclick="setBackground(2)"/>
+        <img src="resources/cubes.png" href = "#" onclick="setBackground(3)"/>
     </div>
 
     <div id = "myprofilePage">

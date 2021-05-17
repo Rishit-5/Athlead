@@ -82,6 +82,10 @@ document.getElementById("enterBtn").onclick = function () {
                         document.getElementById("app").hidden = false;
                         hideMainDivs();
                         document.getElementById("homePage").hidden = true;
+                        firebase.database().ref("Users/" + nameV + "/Background").on('value', function (snapshot) {
+                            document.getElementById("body").className = snapshot.val();
+
+                        });
                     } else {
                         alert("incorrect")
                     }
@@ -166,6 +170,9 @@ document.getElementById("signupenterBtn").onclick = function() {
                     Password: passWV,
                     Followers: 0,
 
+                });
+                firebase.database().ref("Users/"+nameV).update({
+                    Background: "bodyClass"
                 });
                 loggedIN == true;
 
@@ -740,9 +747,14 @@ function hideMainDivs() {
     document.getElementById("viewProfiles").hidden = true;
     document.getElementById("showChatDiv").hidden = true;
     document.getElementById("showChat").hidden = true;
+    document.getElementById("personalPage").hidden = true;
+
     chatOpened = false;
 }
-
+function Customize(){
+    hideMainDivs()
+    document.getElementById("personalPage").hidden = false;
+}
 
 document.getElementById("simage").onclick = function(){
     var input = document.createElement('input');
@@ -957,7 +969,32 @@ for (const option of document.querySelectorAll(".custom-option")) {
     })
 }
 
-
+function setBackground(backNum){
+    if (backNum === 0){
+        document.getElementById("body").className = "bodyClass"
+        firebase.database().ref("Users/"+nameV).update({
+            Background: "bodyClass"
+        });
+    }
+    if (backNum === 1){
+        document.getElementById("body").className = "galaxy"
+        firebase.database().ref("Users/"+nameV).update({
+            Background: "galaxy"
+        });
+    }
+    if (backNum === 2){
+        document.getElementById("body").className = "beach"
+        firebase.database().ref("Users/"+nameV).update({
+            Background: "beach"
+        });
+    }
+    if (backNum === 3){
+        document.getElementById("body").className = "cubes"
+        firebase.database().ref("Users/"+nameV).update({
+            Background: "cubes"
+        });
+    }
+}
 window.addEventListener('click', function (e) {
     for (const select of document.querySelectorAll('.custom-select')) {
         if (!select.contains(e.target)) {
