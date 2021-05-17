@@ -12,6 +12,7 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 var nameV,emailV,passWV,genV;
+var myBio;
 var files = [];
 var yourPosts = [];
 var imageVs = [];
@@ -48,7 +49,11 @@ document.getElementById("enterBtn").onclick = function () {
                         passpass = snapshot.val();
                     });
 
+
                     if (passWV === passpass) {
+                        firebase.database().ref("Users/" + nameV + "/Bio").on('value', function (snapshot) {
+                            myBio = snapshot.val();
+                        });
                         firebase.database().ref("Users/" + nameV + "/Email").on('value', function (snapshot) {
                             emailV = snapshot.val();
                             loggedIN = true;
@@ -160,11 +165,19 @@ document.getElementById("signupenterBtn").onclick = function() {
                 });
             }
             if (!alreadyExists) {
+                var bio = prompt("Please write a short bio about yourself");
+                var tempBio = bio.replace(/\s/g, '');
+                while(tempBio.length===0) {
+                    bio = prompt("Please write a short bio about yourself");
+                    tempBio = bio.replace(/\s/g, '');
+                }
+                myBio = bio;
                 firebase.database().ref("Users/" + nameV).set({
                     Name: nameV,
                     Email: emailV,
                     Password: passWV,
                     Followers: 0,
+                    Bio: bio,
 
                 });
                 loggedIN == true;
@@ -269,19 +282,49 @@ document.getElementById("homeBtn").onclick = function () {
                                 var img2 = document.createElement('img');
                                 img2.src = nameSim[i][2]
                                 homePosts.push(img2)
-                                document.getElementById('homePage').appendChild(img2);
+                                document.getElementById('homePosts').appendChild(img2);
                             }
                             //TODO: Update similarity score when a user makes a post
                             checkedPosts = true;
                         }
                     }
                 })
+
             }
         )
 
     })
-    checkedPosts = false;
 
+    checkedPosts = false;
+    firebase.database().ref("Users/").once('value', function(snapshot) {
+        var i = 0;
+        document.getElementById("homeUsers").innerHTML = "";
+        snapshot.forEach(function (User) {
+
+            firebase.database().ref("Users/"+User.key.toString()+"/PFP").once('value', function(pfpLink) {
+                // alert(pfpLink.val().Link);
+                // alert(User.key);
+                if (i<=6 && User.key !== nameV) {
+                    var div = document.createElement('div');
+                    div.className = "homeUserDiv";
+                    div.onclick = function () {
+                        viewProfile(User.key.toString());
+                    }
+
+                    var img = document.createElement('img');
+                    img.src = pfpLink.val().Link;
+                    img.className = "profilepic";
+
+                    var p = document.createElement('p');
+                    p.innerHTML = User.key;
+
+                    div.append(img, p);
+                    document.getElementById("homeUsers").append(div);
+                    i++;
+                }
+            })
+        })
+    })
 
 
 
@@ -530,6 +573,7 @@ function viewMyProfile() {
     document.getElementById("postingPage").hidden = true;
 
     document.getElementById("myUsername").innerHTML = nameV;
+    document.getElementById("myBio").innerHTML = myBio;
 
     var pfpsrc;
     firebase.database().ref("Users/" + nameV + "/PFP/" + "Link").once('value', function (snapshot) {
@@ -1054,6 +1098,11 @@ function viewProfile(userName) {
         hideMainDivs();
         document.getElementById("viewProfiles").hidden = false;
         document.getElementById("viewUsername").innerHTML = userName;
+
+        firebase.database().ref("Users/" + userName + "/Bio").on('value', function (snapshot) {
+            document.getElementById("viewBio").innerHTML = snapshot.val();
+        });
+
 
         firebase.database().ref("Users/" + userName + "/PFP/Link").on("value", function (snapshot) {
             pfpsrc = snapshot.val();
